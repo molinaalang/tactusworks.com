@@ -313,7 +313,26 @@
     if (ctx.state === 'suspended') ctx.resume();
     // iPhone's silent switch mutes web audio unless the page asks for a playback session.
     try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) { /* not supported */ }
+    unmute(true);
     master.gain.value = 1; soundOn = true; renderSound();
+  }
+  // Older iPhones (and pages inside a frame) ignore audioSession. A silent looping <audio>
+  // started from the tap moves the page to the "playback" channel, which the silent switch doesn't mute.
+  let silentLoop = null;
+  function unmute(on) {
+    try {
+      if (!silentLoop) {
+        if (!on) return;
+        const sr = 8000, n = sr / 2, b = new ArrayBuffer(44 + n * 2), d = new DataView(b);
+        const w = (o, s) => { for (let i = 0; i < s.length; i++) d.setUint8(o + i, s.charCodeAt(i)); };
+        w(0, 'RIFF'); d.setUint32(4, 36 + n * 2, true); w(8, 'WAVE'); w(12, 'fmt '); d.setUint32(16, 16, true);
+        d.setUint16(20, 1, true); d.setUint16(22, 1, true); d.setUint32(24, sr, true); d.setUint32(28, sr * 2, true);
+        d.setUint16(32, 2, true); d.setUint16(34, 16, true); w(36, 'data'); d.setUint32(40, n * 2, true);
+        silentLoop = new Audio(URL.createObjectURL(new Blob([b], { type: 'audio/wav' })));
+        silentLoop.loop = true; silentLoop.setAttribute('playsinline', '');
+      }
+      if (on) silentLoop.play().catch(() => {}); else silentLoop.pause();
+    } catch (e) { /* not supported */ }
   }
   // iOS suspends or "interrupts" the context (lock screen, call, tab switch). Wake it on any gesture.
   function wake() {
@@ -322,6 +341,7 @@
   }
   function soundMute() {
     soundOn = false;
+    unmute(false);
     if (master) master.gain.value = 0;
     renderSound();
   }
