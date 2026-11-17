@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0F0F10">
+<title>Tactus</title>
+<link rel="canonical" href="https://tactusworks.com/tactus/">
+<meta name="description" content="Tactus is a practice app for music that changes meter. Build a passage bar by bar and hear it. Try it on the page.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Tactus">
+<meta property="og:description" content="A practice app for music that changes meter. Build a passage bar by bar and hear it.">
+<meta property="og:url" content="https://tactusworks.com/tactus/">
+<meta property="og:image" content="https://tactusworks.com/tactus/assets/images/v2/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Three Tactus screens: typing meters, a passage playing, and the Inspector">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/icons/favicon-32x32.png">
+<link rel="stylesheet" href="proto.css?v=1116a">
+</head>
+<body>
+
+<header class="top">
+  <a class="logo" href="#top" aria-label="Tactus">
+    <span class="logo-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span class="logo-word">TACTUS</span>
+  </a>
+  <nav class="top-nav">
+    <a href="manual/">Manual</a>
+    <a class="top-get" href="#get">Get the app</a>
+  </nav>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="hero-copy">
+      <h1>Why not program it in and give it a listen?</h1>
+      <p class="hero-sub">Tactus is a practice app for music that changes meter. This is a small version of it. It plays by itself first, then it&rsquo;s yours.</p>
+    </div>
+
+    <div class="stage" id="stage" role="group" aria-label="Tactus demo: build a passage and play it">
+      <div class="steps">
+        <button type="button" class="step is-on" data-step="1" aria-current="step"><b>1</b> Meters</button>
+        <button type="button" class="step" data-step="2"><b>2</b> Beats</button>
+        <button type="button" class="step" data-step="3"><b>3</b> Tuplets</button>
+        <button type="button" class="step" data-step="4"><b>4</b> Tempo</button>
+      </div>
+
+      <div class="coach">
+        <p id="coach" aria-live="polite"></p>
+        <button type="button" id="next" class="next" hidden></button>
+      </div>
+
+      <div class="bars" id="bars"></div>
+
+      <div class="transport">
+        <button type="button" id="play" class="play" aria-label="Play">
+          <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>
+          <svg class="i-stop" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="6.5" width="11" height="11" rx="1.5" fill="currentColor"/></svg>
+        </button>
+        <div class="tempo">
+          <button type="button" id="tDown" aria-label="Slower">&minus;</button>
+          <span id="tVal">120</span>
+          <button type="button" id="tUp" aria-label="Faster">+</button>
+        </div>
+        <button type="button" id="reset" class="reset" aria-label="Start over" title="Start over">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5.6 9.2A7 7 0 1 1 5 12"/><path d="M4.6 4.8v4.4H9"/></svg>
+          <span>Start over</span>
+        </button>
+        <button type="button" id="sound" class="sound">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3.5 9.5h3.3L11.5 5.5v13l-4.7-4H3.5z" fill="currentColor"/>
+            <path class="s-on" d="M15 9.2a4 4 0 0 1 0 5.6M17.6 6.6a7.6 7.6 0 0 1 0 10.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            <path class="s-off" d="M15.2 9.6l4.8 4.8m0-4.8l-4.8 4.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+          <span id="soundLabel">Sound off</span>
+        </button>
+      </div>
+
+      <div class="panel" id="panelKeys">
+        <div class="queue">
+          <div class="queue-list" id="queue"></div>
+          <button type="button" id="back" class="queue-btn" aria-label="Delete last meter">&#9003;</button>
+          <button type="button" id="go" class="go" disabled>Go</button>
+        </div>
+        <div class="keys" id="keys"></div>
+      </div>
+
+      <div class="panel" id="panelEdit" hidden>
+        <p class="edit-empty" id="editEmpty">Tap a beat above.</p>
+        <div class="edit-body" id="editBody" hidden>
+          <div class="edit-left">
+            <p class="edit-title" id="editTitle"></p>
+            <div id="editCluster"></div>
+            <p class="edit-hint">Tap a dot: strong, medium, weak, off</p>
+          </div>
+          <div class="edit-right">
+            <p class="row-label">Notes in this beat</p>
+            <div class="nums" id="notes"></div>
+            <div id="acrossWrap" hidden>
+              <p class="row-label">Spread across beats</p>
+              <div class="nums" id="across"></div>
+            </div>
+            <button type="button" id="addBars" class="link-btn">+ Add bars</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="panelTempo" hidden>
+        <svg class="graph" id="graph" role="application" aria-roledescription="tempo graph" tabindex="0" aria-label="Tempo across the passage"></svg>
+        <div class="curve-row">
+          <label for="curve">Curve</label>
+          <input type="range" id="curve" min="-1" max="1" step="0.05" value="0">
+          <span id="curveVal">0</span>
+          <button type="button" id="delDot" class="link-btn">Remove dot</button>
+        </div>
+      </div>
+
+      <div class="presets" id="examples" hidden>
+        <span class="presets-label">Examples</span>
+        <button type="button" data-preset="original">Original</button>
+        <button type="button" data-preset="quint">Quintuplets</button>
+        <button type="button" data-preset="seven">7/8 into 5/16</button>
+      </div>
+
+      <div class="ghost" id="ghost" aria-hidden="true"><i></i></div>
+    </div>
+  </section>
+
+  <section class="story">
+    <h2 class="label">Where it came from</h2>
+    <div class="story-body">
+      <p class="story-lead">I&rsquo;m an orchestral violinist. I was learning a rhythmically complex contemporary piece when the idea for Tactus came to me.</p>
+      <p>I wanted to see and hear the bigger rhythmic picture, and to separate the complex rhythms from the notes so I could isolate them in practice. Every tool I tried had too much friction.</p>
+      <p>Tactus is the tool I wanted. I use it often in my work as a professional musician.</p>
+    </div>
+  </section>
+
+  <section class="spec">
+    <h2 class="label">In the app</h2>
+    <dl class="spec-list">
+      <div>
+        <dt><svg class="glyph g-save" viewBox="0 0 72 40" aria-hidden="true"><g><circle cx="4" cy="8" r="2.5"/><circle cx="16" cy="8" r="2.5"/><circle cx="28" cy="8" r="2.5"/><circle cx="40" cy="8" r="2.5"/></g><g><circle cx="4" cy="20" r="2.5"/><circle cx="16" cy="20" r="2.5"/><circle cx="28" cy="20" r="2.5"/><circle cx="40" cy="20" r="2.5"/><circle cx="52" cy="20" r="2.5"/></g><g><circle cx="4" cy="32" r="2.5"/><circle cx="16" cy="32" r="2.5"/><circle cx="28" cy="32" r="2.5"/></g></svg>Save</dt><dd>Keep every passage you build.</dd></div>
+      <div>
+        <dt><svg class="glyph g-share" viewBox="0 0 72 40" aria-hidden="true"><g><circle cx="4" cy="10" r="2.5"/><circle cx="12" cy="20" r="2.5"/><circle cx="20" cy="30" r="2.5"/></g><g><circle cx="44" cy="10" r="2.5"/><circle cx="52" cy="20" r="2.5"/><circle cx="60" cy="30" r="2.5"/></g><circle class="hot" cx="12" cy="20" r="2.5"/></svg>Share</dt><dd>Send a passage to the people you play with.</dd></div>
+      <div>
+        <dt><svg class="glyph g-tempo" viewBox="0 0 72 40" aria-hidden="true"><path class="dim" d="M4 32H24C40 32 42 8 68 8"/><path class="ramp" d="M4 32H24C40 32 42 8 68 8" pathLength="1"/></svg>Tempo</dt><dd>Change tempo at any bar, or ramp from one tempo to the next.</dd></div>
+      <div>
+        <dt><svg class="glyph g-link" viewBox="0 0 72 40" aria-hidden="true"><line class="dim" x1="22" y1="20" x2="50" y2="20"/><circle cx="12" cy="20" r="4"/><circle cx="60" cy="20" r="4"/></svg>Link</dt><dd>Ableton Link keeps it in time with other devices.</dd></div>
+    </dl>
+    <div class="full">
+      <div class="full-text">
+        <h3>Full control</h3>
+        <p>Open the Inspector to edit any beat, and choose the shape of a tempo ramp.</p>
+      </div>
+      <div class="shots">
+        <video class="shot clip" muted loop playsinline preload="none" width="600" height="1304" poster="assets/video/v2/beat-poster.jpg" aria-label="Tapping a beat in Tactus, then editing it in the Inspector"><source src="assets/video/v2/beat.webm" type="video/webm"><source src="assets/video/v2/beat.mp4" type="video/mp4"></video>
+        <video class="shot clip" muted loop playsinline preload="none" width="600" height="1304" poster="assets/video/v2/tempo-poster.jpg" aria-label="Shaping a tempo ramp in Tactus and playing it"><source src="assets/video/v2/tempo.webm" type="video/webm"><source src="assets/video/v2/tempo.mp4" type="video/mp4"></video>
+      </div>
+    </div>
+  </section>
+
+  <section class="get" id="get">
+    <h2 class="label">Get the app</h2>
+    <div class="get-body">
+      <div class="get-main">
+      <p class="price"><span>$9.99</span> once. Free updates for life.</p>
+      <p class="v2-note"><b>Version 2.0.</b> Already have Tactus? It&rsquo;s a free update.</p>
+      <div class="stores">
+        <a class="store" href="https://apps.apple.com/app/tactus/id6770496883" target="_blank" rel="noopener"><img src="assets/images/badge-app-store.svg" alt="Download on the App Store" width="144" height="48"></a>
+        <a class="store store-play" href="https://play.google.com/store/apps/details?id=com.alanmolina.tactus" target="_blank" rel="noopener"><img src="assets/images/badge-google-play.png" alt="Get it on Google Play" width="186" height="71"></a>
+      </div>
+      </div>
+      <img class="shot get-shot" src="assets/images/v2/editor-playing.webp" alt="A passage playing in Tactus" width="600" height="1305" loading="lazy" decoding="async">
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <span>&copy; 2026 Tactus Works</span>
+  <a href="manual/">Manual</a>
+  <a href="privacy/">Privacy</a>
+</footer>
+
+<script src="proto.js?v=1116a"></script>
+</body>
+</html>

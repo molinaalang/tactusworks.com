@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en-NZ">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tactus Works</title>
+<meta name="description" content="Tactus, Segno and TempoStep: practice apps for musicians, made by orchestral violinist Alan Molina.">
+<link rel="canonical" href="https://tactusworks.com/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://tactusworks.com/">
+<meta property="og:site_name" content="Tactus Works">
+<meta property="og:title" content="Tactus Works">
+<meta property="og:description" content="Tactus, Segno and TempoStep: practice apps for musicians, made by orchestral violinist Alan Molina.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f4f2ed" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="img/tactus.png" type="image/png">
+<link rel="preload" href="fonts/fraunces-soft-black.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+/* Tactus Works hub: one colour band per app, each phone on a tinted hard shadow,
+   with scroll-driven motion. Fraunces for the hub's own words, each app's own title font for its name.
+   All SIL OFL 1.1, self-hosted: Fraunces Soft Black from the TempoStep site, Archivo Black from the Segno app
+   (Latin subset), Jost from the Tactus site. */
+@font-face { font-family: "Fraunces"; font-weight: 900; font-display: swap; src: url("fonts/fraunces-soft-black.woff2") format("woff2"); }
+@font-face { font-family: "Archivo Black"; font-weight: 400; font-display: swap; src: url("fonts/archivo-black.woff2") format("woff2"); }
+@font-face { font-family: "Jost"; font-weight: 500; font-display: swap; src: url("fonts/jost-500.woff2") format("woff2"); }
+:root {
+  color-scheme: light dark;
+  --bg: #f4f2ed; --fg: #161616; --soft: #55524c; --line: #dcd8cf;
+  --tactus-bg: #101112; --tactus-fg: #eef0ef; --tactus-accent: #8bbeb6;
+  --segno-bg: #e05a38; --segno-fg: #1a120e;
+  --tempostep-bg: #f6d24f; --tempostep-fg: #111110;
+  --display: "Fraunces", Georgia, serif;
+  --display-set: normal;
+  --display-wght: 900;
+  --display-track: -.025em;
+  --body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.tactus h2 { font-family: "Jost", system-ui, sans-serif; font-variation-settings: normal; font-weight: 500; letter-spacing: .06em; margin-right: -.06em; text-transform: uppercase; }
+/* Segno: "Segno" in Archivo Black, as in the app's own header (screenshot from the user, 16 Nov). */
+.segno h2 { font-family: "Archivo Black", system-ui, sans-serif; font-variation-settings: normal; font-weight: 400; letter-spacing: 0; }
+.tempostep h2 { text-transform: lowercase; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #121212; --fg: #ecebe8; --soft: #a6a39c; --line: #2c2b29; color-scheme: dark; } }
+:root[data-theme="dark"] { --bg: #121212; --fg: #ecebe8; --soft: #a6a39c; --line: #2c2b29; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 400 1.0625rem/1.5 var(--body); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+.wrap { width: 100%; max-width: 68rem; margin: 0 auto; padding-left: max(1.25rem, env(safe-area-inset-left, 0px)); padding-right: max(1.25rem, env(safe-area-inset-right, 0px)); }
+@media (min-width: 40rem) { .wrap { padding-left: max(2.5rem, env(safe-area-inset-left, 0px)); padding-right: max(2.5rem, env(safe-area-inset-right, 0px)); } }
+.display { font-family: var(--display); font-variation-settings: var(--display-set); font-weight: var(--display-wght); letter-spacing: var(--display-track); }
+
+header { padding: 1.5rem 0 clamp(4.5rem, 14vh, 8rem); }
+.mark { margin: 0; font-size: 1.125rem; }
+h1 { margin: clamp(3rem, 12vh, 6rem) 0 0; max-width: 11em; font-size: clamp(2.75rem, 11vw, 5.25rem); line-height: .98; text-wrap: balance; }
+
+ul { list-style: none; margin: 0; padding: 0; }
+/* --p and --c are set by the script on the few elements that use them, and don't inherit,
+   so a scroll frame restyles those elements only, not every child of the band. */
+@property --p { syntax: "<number>"; inherits: false; initial-value: 1; }
+@property --c { syntax: "<number>"; inherits: false; initial-value: 0; }
+.text, .phone { --p: 1; }
+.app, .stage { --c: 0; }
+.phone::before { --p: inherit; }
+.app::after { --c: inherit; }
+.app { display: block; overflow: hidden; background: var(--band-bg); color: var(--band-fg); text-decoration: none; -webkit-tap-highlight-color: transparent; }
+.tactus { --band-bg: var(--tactus-bg); --band-fg: var(--tactus-fg); --shade: var(--tactus-accent); --tilt: -7deg; }
+.segno { --band-bg: var(--segno-bg); --band-fg: var(--segno-fg); --shade: #8e2a12; --tilt: -12deg; }
+.tempostep { --band-bg: var(--tempostep-bg); --band-fg: var(--tempostep-fg); --shade: #b8901a; --tilt: 7deg; }
+
+.row { display: grid; gap: 2.5rem; padding-top: clamp(3rem, 8vw, 5rem); }
+.text { min-width: 0; transform: translateY(calc((1 - var(--p)) * 1.5rem)); }
+.name { display: flex; align-items: center; gap: .875rem; }
+.name img { width: 3.25rem; height: 3.25rem; border-radius: 22.5%; box-shadow: 0 0 0 1px rgba(0,0,0,.2); }
+.tactus .name img { box-shadow: 0 0 0 1px rgba(255,255,255,.2); }
+h2 { margin: 0; font-size: clamp(2.5rem, 10vw, 3.5rem); line-height: .95; }
+.line { margin: 1.125rem 0 0; max-width: 22em; font-size: clamp(1.125rem, 2.2vw, 1.3125rem); line-height: 1.4; text-wrap: pretty; }
+.meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem 1.25rem; margin: 1.375rem 0 0; font-size: 1rem; }
+.status { opacity: .8; }
+.segno .status { opacity: 1; }
+.more { font-weight: 700; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: .2em; }
+.tactus .more { color: var(--tactus-accent); }
+
+/* The phone: whole device, hard shadow tinted from the band, bottom tucked under the band edge. */
+.stage { display: grid; justify-items: center; }
+.phone { position: relative; isolation: isolate; width: min(15.5rem, 66vw); margin-bottom: -22%;
+  transform: translateY(calc((1 - var(--p)) * 5rem)) rotate(calc((1 - var(--p)) * var(--tilt))); }
+.phone::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: 2.5rem; background: var(--shade);
+  transform: translate(calc(var(--p) * 1rem), calc(var(--p) * 1rem)); }
+.screen { display: block; width: 100%; height: auto; border: .5rem solid #0b0b0b; border-radius: 2.5rem; background: #0b0b0b; }
+.tactus .screen { border-color: #2c2e30; }
+/* Segno is read with the phone on its side, so its phone lies landscape and turns flat as it arrives. */
+.segno .phone { width: min(100%, 30rem); margin-bottom: 0;
+  transform: translateY(calc((1 - var(--p)) * 3rem)) rotate(calc((1 - var(--p)) * var(--tilt))) scale(calc(.88 + var(--p) * .12)); }
+.segno .stage { padding-bottom: clamp(3rem, 8vw, 4.5rem); }
+
+@media (min-width: 50rem) {
+  .row { grid-template-columns: 1fr 19rem; align-items: center; gap: 3rem; }
+  .text { padding-bottom: 4rem; }
+  .stage { align-self: end; }
+  .phone { width: 19rem; margin-bottom: -6rem; }
+  .segno .row { grid-template-columns: 1fr 30rem; }
+  .segno .text { padding-bottom: 0; }
+  .segno .stage { align-self: center; padding-bottom: 4rem; }
+  .segno .phone { width: 30rem; }
+}
+/* Stacking: each band pins once its bottom reaches the screen's bottom edge (JS sets --stick),
+   and the next band slides up over it like a card. The covered band shrinks a touch and darkens (--c). */
+main li { position: sticky; top: var(--stick, 0px); }
+/* Depth: a lit top edge and a soft, layered cast shadow on the incoming band; the covered band leans
+   back in perspective, darkens most where the new band's shadow falls, and its phone drifts (parallax).
+   A faint paper grain keeps the flat colour from reading as plastic. */
+main li .app { border-radius: 1.75rem 1.75rem 0 0;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 -1px 3px rgba(0,0,0,.18), 0 -1.25rem 2.5rem -.5rem rgba(0,0,0,.4); }
+.app { position: relative; transform-origin: 50% 100%; transform: perspective(80rem) rotateX(calc(var(--c, 0) * 9deg)) scale(calc(1 - var(--c, 0) * .05)); }
+.app::before { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: .22; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+.app::after { content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: 2; pointer-events: none; opacity: calc(var(--c, 0) * .85);
+  background: linear-gradient(to top, rgba(0,0,0,.75), rgba(0,0,0,.3) 55%, rgba(0,0,0,.12)); }
+/* The first band casts onto the page, not onto another band: keep its shadow short and light. */
+main li:first-child .app { box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 -1px 2px rgba(0,0,0,.1), 0 -.5rem 1.25rem -.5rem rgba(0,0,0,.18); }
+.row { position: relative; z-index: 1; }
+.stage { transform: translateY(calc(var(--c, 0) * -2.5rem)); }
+@media (min-width: 50rem) { main li .app { border-radius: 2.5rem 2.5rem 0 0; } }
+/* Clips: extra app screens stacked on the first one; the script fades them in turn while the band is in view. */
+.lift { position: relative; }
+/* Desktop hover: the phone lifts off its shadow. */
+.lift { transition: transform .25s cubic-bezier(.23, 1, .32, 1); }
+@media (hover: hover) and (pointer: fine) { .app:hover .lift { transform: translate(-.375rem, -.375rem); } .app:hover .more { text-decoration-thickness: 3px; } }
+.app:focus-visible { outline: 3px solid var(--band-fg); outline-offset: -3px; }
+@media (prefers-reduced-motion: reduce) { .text, .phone { --p: 1 !important; } .app, .stage { --c: 0 !important; } .lift { transition: none; } }
+@media (prefers-reduced-motion: no-preference) { main li .app { will-change: transform; } }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tactus { box-shadow: inset 0 1px 0 var(--line); } }
+:root[data-theme="dark"] .tactus { box-shadow: inset 0 1px 0 var(--line); }
+
+footer { padding: 1.75rem 0 2.5rem; font-size: .9375rem; color: var(--soft); }
+footer p { margin: 0; }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <p class="mark display">Tactus Works</p>
+    <h1 class="display">Apps for the practice room.</h1>
+  </div>
+</header>
+<main>
+  <ul>
+    <li>
+      <a class="app tactus" href="/tactus/" aria-labelledby="tactus-name tactus-status">
+        <div class="wrap row">
+          <div class="text">
+            <div class="name"><img src="img/tactus.png" alt="" width="52" height="52"><h2 class="display" id="tactus-name">Tactus</h2></div>
+            <p class="line">Enter changing metres in seconds, and subdivide every beat exactly.</p>
+            <p class="meta"><span class="status" id="tactus-status">On the App Store</span><span class="more">See Tactus</span></p>
+          </div>
+          <div class="stage"><div class="phone"><div class="lift"><video class="screen clip" src="shots/tactus-clip.mp4" poster="shots/tactus-clip-poster.jpg" width="912" height="1982" muted loop playsinline preload="metadata" aria-label="Tactus: a beat in the Warm-up passage becomes a triplet, then three bars play"></video></div></div></div>
+        </div>
+      </a>
+    </li>
+    <li>
+      <a class="app segno" href="/segno/" aria-labelledby="segno-name segno-status">
+        <div class="wrap row">
+          <div class="text">
+            <div class="name"><img src="img/segno.png" alt="" width="52" height="52"><h2 class="display" id="segno-name">Segno</h2></div>
+            <p class="line">A fun score reader. Practise anywhere, nod to turn the page.</p>
+            <p class="meta"><span class="status" id="segno-status">Coming soon</span><span class="more">See Segno</span></p>
+          </div>
+          <div class="stage"><div class="phone"><div class="lift"><video class="screen clip" src="shots/segno-clip.mp4" poster="shots/segno-clip-poster.jpg" width="1440" height="664" muted loop playsinline preload="none" aria-label="Segno: a page of Beethoven's Fifth, scrolled, zoomed in and read along, phone on its side"></video></div></div></div>
+        </div>
+      </a>
+    </li>
+    <li>
+      <a class="app tempostep" href="/tempostep/" aria-labelledby="tempostep-name tempostep-status">
+        <div class="wrap row">
+          <div class="text">
+            <div class="name"><img src="img/tempostep.png" alt="" width="52" height="52"><h2 class="display" id="tempostep-name">TempoStep</h2></div>
+            <p class="line">A metronome that listens. Stop playing and the tempo steps up on its own.</p>
+            <p class="meta"><span class="status" id="tempostep-status">On the App Store. Android on the way.</span><span class="more">See TempoStep</span></p>
+          </div>
+          <div class="stage"><div class="phone"><div class="lift"><video class="screen clip" src="shots/tempostep-clip.mp4" poster="shots/tempostep-clip-poster.jpg" width="912" height="1976" muted loop playsinline preload="none" aria-label="TempoStep: listening at 120, counting down, stepping up to 125, then 130"></video></div></div></div>
+        </div>
+      </a>
+    </li>
+  </ul>
+</main>
+<footer><div class="wrap"><p>&copy; 2026 Alan Molina</p></div></footer>
+
+
+<script>
+// Scroll-driven entrance: --p goes from 0 (band just entering) to 1 (well in view), written on the band's
+// .text and .phone only. Stacking: --stick pins each band by its bottom edge, so a band taller than the
+// screen still shows whole. --c (0 to 1) is how far the next band has covered this one, written on the band
+// and its .stage. Transform and opacity only. Reduced motion: --p stays 1, --c stays 0, clips don't play.
+(function () {
+  var still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var bands = [].slice.call(document.querySelectorAll(".app")).map(function (a) {
+    return { a: a, li: a.parentNode, text: a.querySelector(".text"), phone: a.querySelector(".phone"),
+      stage: a.querySelector(".stage"), clip: a.querySelector("video.clip") };
+  });
+  var queued = false;
+  function ease(t) { return 1 - Math.pow(1 - t, 3); }
+  function clamp(t) { return Math.min(1, Math.max(0, t)); }
+  // Write a value only when it changes: each write restyles that element.
+  function put(el, k, v) { if (el["_" + k] !== v) { el["_" + k] = v; el.style.setProperty(k, v); } }
+  // A clip plays while it is on screen and its band is not mostly covered by the next one.
+  function sync(v) {
+    if (!v || still) return;
+    if (v._seen && !v._covered) { if (v.paused) { var p = v.play(); if (p) p.catch(function () {}); } }
+    else if (!v.paused) v.pause();
+  }
+  function update() {
+    queued = false;
+    var vh = window.innerHeight;
+    // Read everything first, then write, so the browser lays out once per frame.
+    var m = bands.map(function (b) { return { h: b.li.offsetHeight, top: b.a.getBoundingClientRect().top }; });
+    bands.forEach(function (b, i) {
+      put(b.li, "--stick", Math.min(0, vh - m[i].h) + "px");
+      if (still) return;
+      var p = ease(clamp((vh - m[i].top) / (vh * 0.65))).toFixed(3);
+      var c = m[i + 1] ? clamp((vh - m[i + 1].top) / vh) : 0;
+      put(b.text, "--p", p); put(b.phone, "--p", p);
+      put(b.a, "--c", c.toFixed(3)); put(b.stage, "--c", c.toFixed(3));
+      if (b.clip) { var cov = c > 0.85; if (b.clip._covered !== cov) { b.clip._covered = cov; sync(b.clip); } }
+    });
+  }
+  function queue() { if (!queued) { queued = true; requestAnimationFrame(update); } }
+  window.addEventListener("scroll", queue, { passive: true });
+  window.addEventListener("resize", queue);
+  // Coming back with the Back button restores the page from cache: measure again and restart what's in view.
+  window.addEventListener("pageshow", function (e) {
+    if (e.persisted) { update(); bands.forEach(function (b) { sync(b.clip); }); }
+  });
+  update();
+
+  // Clips: start loading one screen early, play only while 40% in view.
+  // If the browser refuses to play (Low Power), the poster (first frame) stays.
+  if (still || !("IntersectionObserver" in window)) return;
+  var early = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) { e.target.preload = "auto"; early.unobserve(e.target); } });
+  }, { rootMargin: "0px 0px 100% 0px" });
+  var view = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { e.target._seen = e.isIntersecting; sync(e.target); });
+  }, { threshold: 0.4 });
+  bands.forEach(function (b) { if (b.clip) { early.observe(b.clip); view.observe(b.clip); } });
+})();
+</script>
+</body>
+</html>

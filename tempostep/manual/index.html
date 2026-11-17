@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>User manual | TempoStep</title>
+<meta name="theme-color" content="#F6D24F" />
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/web/favicon.png" />
+<link rel="apple-touch-icon" href="../assets/web/apple-touch-icon.png" />
+<meta name="description" content="Full user manual for TempoStep: setup, microphone calibration, Step Up, Shuffle, Spiral and Step Down modes, metres, and every setting." />
+<link rel="canonical" href="https://tactusworks.com/tempostep/manual/" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://tactusworks.com/tempostep/manual/" />
+<meta property="og:title" content="User manual | TempoStep" />
+<meta property="og:description" content="Full documentation for TempoStep: practice modes, mic calibration, metres, and every setting explained." />
+<meta property="og:image" content="https://tactusworks.com/tempostep/assets/web/app-icon-1024.png" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="User manual | TempoStep" />
+<meta name="twitter:description" content="Full documentation for TempoStep: practice modes, mic calibration, metres, and every setting explained." />
+<meta name="twitter:image" content="https://tactusworks.com/tempostep/assets/web/app-icon-1024.png" />
+<link rel="preload" href="../assets/fonts/FrauncesSoft-Black.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="../assets/site.css" />
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="card yellow page-head">
+  <div class="in">
+    <nav class="nav" aria-label="Main">
+      <a class="wordmark" href="../">tempostep</a>
+      <ul>
+        <li><a href="../">home</a></li>
+        <li><a href="mailto:tempostepapp@gmail.com">support</a></li>
+      </ul>
+    </nav>
+    <h1>How TempoStep works.</h1>
+    <p class="lead">TempoStep is a metronome that listens while you play and advances the tempo automatically when you stop. Practice at a comfortable speed, pause, and let the app push you forward.</p>
+  </div>
+</header>
+<main id="main" class="card paper doc-wrap">
+<div class="doc">
+<section>
+<h2>The core loop.</h2>
+<p>In Auto mode, TempoStep listens through the microphone. When it detects silence for the wait you set, it advances the tempo by one step. You play, you stop, the tempo moves up. Repeat.</p>
+<p>Everything else in the app controls how that loop behaves.</p>
+</section>
+
+<section>
+<h2>The main screen.</h2>
+<p>The screen is arranged top to bottom:</p>
+<ul>
+<li>Tempo: the current BPM in large type. Tap it to type a value. When you reach your target the screen flashes to another color.</li>
+<li>Beat dots: one per beat. Tap a dot to accent it. Tap the time signature above to pick a metre.</li>
+<li>Tempo buttons: minus, tap and plus. Minus and plus move one BPM.</li>
+<li>Plan line: shows what the session will do, for example "up 5 each round, to 160". While playing it becomes a sentence such as "hearing you."</li>
+<li>Listening toggle: the ear icon is Auto, the hand icon is Manual.</li>
+<li>Range chips: &plusmn;10%, &plusmn;20% and &plusmn;30% in Shuffle; drop 25%, drop 50% and drop back all in Spiral.</li>
+<li>Bottom row: start (stop while playing). While playing in Auto: hold lock, listening toggle, stop. In Manual: back, listening toggle, stop, next. Modes are the chips above.</li>
+<li>Status line: small line of feedback text at the bottom. Controls hide after three seconds of playing. Tap the screen to bring them back. Long-press any control to see a help card.</li>
+</ul>
+<img class="shot" data-shot="manual-main" src="../assets/shots/web/idle.png" width="660" height="1434" loading="lazy" alt="Main screen: tempo, beat dots, plan line and bottom row" />
+</section>
+
+<section>
+<h2>Beat accents.</h2>
+<p>Each dot in the beat row is tappable. Tap any dot to toggle an accent on that beat.</p>
+<ul>
+<li>Accented beats are drawn bigger and click louder.</li>
+<li>Normal beats play the standard click.</li>
+<li>Beat 1 is accented by default. In 6/8, 9/8 and 12/8 every third beat is accented too. Changing the metre resets accents to that default.</li>
+</ul>
+</section>
+
+<section id="metre">
+<h2>Metre.</h2>
+<p>Tap the time signature (for example 4/4) to open the picker: 2/4, 3/4, 4/4, 5/4, 6/8, 7/8, 9/8 and 12/8. While playing, the change lands on the next bar line. For other metres use beats per bar and beat unit in Settings.</p>
+</section>
+
+<section>
+<h2>Auto and Manual.</h2>
+<h3>Auto</h3>
+<p>The mic is active. TempoStep detects when you stop playing and counts down before advancing.</p>
+<p>The screen says "hearing you." while it picks up your playing. When you stop it says "next, 125 in 2 seconds." and a thin line runs across the screen as the countdown.</p>
+<div class="shot-row">
+<img class="shot" data-shot="manual-auto-hearing" src="../assets/shots/web/hearing.png" width="660" height="1434" loading="lazy" alt="Sound detected: hearing you." />
+<img class="shot" data-shot="manual-auto-countdown" src="../assets/shots/web/countdown.png" width="660" height="1434" loading="lazy" alt="Silence countdown: next, 125 in 2 seconds." />
+</div>
+<h3>Manual</h3>
+<p>The mic is off. A back button and a next button sit on either side of stop.</p>
+<ul>
+<li>Next advances the tempo one step.</li>
+<li>Back returns to the tempo before the last step. One level only.</li>
+</ul>
+<p>Use Manual when you want full control over when the tempo moves, or when mic detection is not practical.</p>
+</section>
+
+<section>
+<h2>Mic calibration.</h2>
+<p>Each time you press start with listening on, TempoStep spends 2 seconds measuring the room. Stay quiet. It uses that time to set a noise floor.</p>
+<p>The screen reads "stay quiet, measuring the room."</p>
+<p>It also runs when the system volume changes.</p>
+</section>
+
+<section>
+<h2>Four practice modes.</h2>
+<p>Pick a mode from the chips under the time signature: step up, shuffle, spiral, step down. The chips are visible while stopped.</p>
+
+<h3>Step Up</h3>
+<img class="shot" data-shot="manual-step-up" src="../assets/shots/web/idle.png" width="660" height="1434" loading="lazy" alt="Step up: the default mode, ready to start" />
+<p>The default. Each advance adds your tempo step, up to a maximum of 240.</p>
+<p>When the tempo reaches your target, a chime plays and the screen flashes to another color. It keeps going if you keep playing.</p>
+<p>Best for building speed on a single passage from a comfortable starting point to a goal tempo.</p>
+
+<h3>Step Down</h3>
+<img class="shot" data-shot="manual-step-down" src="../assets/shots/web/step-down.png" width="660" height="1434" loading="lazy" alt="Step down mode" />
+<p>Each advance subtracts your tempo step, down to the floor you set in Settings.</p>
+<p>A chime plays and the screen flashes when the tempo reaches or falls below your floor.</p>
+<p>In Manual mode, next lowers the tempo the same way.</p>
+<p>Best for slowing down to isolate a difficult passage, or warming down after a fast practice session.</p>
+
+<h3 id="shuffle">Shuffle</h3>
+<img class="shot" data-shot="manual-shuffle" src="../assets/shots/web/shuffle.png" width="660" height="1434" loading="lazy" alt="Shuffle mode at 132 BPM, range chips below the tempo" />
+<p>TempoStep draws a random tempo near your target each time you stop. The range chips set the spread.</p>
+<table>
+<thead><tr><th>Setting</th><th>Spread</th></tr></thead>
+<tbody>
+<tr><td>&plusmn;10%</td><td>Within 10% of target</td></tr>
+<tr><td>&plusmn;20%</td><td>Within 20% of target</td></tr>
+<tr><td>&plusmn;30%</td><td>Within 30% of target</td></tr>
+</tbody>
+</table>
+<p>The target tempo is shown below the tempo. Adjusting the BPM manually while in Shuffle updates the target. When you stop the session, the BPM returns to your target.</p>
+<p>No chime in Shuffle mode.</p>
+<p>Best for keeping practice unpredictable, so you adapt instead of anticipating.</p>
+
+<h3>Spiral</h3>
+<div class="shot-row">
+<img class="shot" data-shot="manual-spiral-climb" src="../assets/shots/web/spiral-climb.png" width="660" height="1434" loading="lazy" alt="Spiral mode: climbing" />
+<img class="shot" data-shot="manual-spiral-review" src="../assets/shots/web/spiral-review.png" width="660" height="1434" loading="lazy" alt="Spiral: review at 130." />
+</div>
+<p>Spiral climbs, then goes back over ground you have covered.</p>
+<p>How a cycle works:</p>
+<ol>
+<li>The tempo advances normally for three steps.</li>
+<li>On the next silence it drops back partway. The screen says "review at 140."</li>
+<li>On the following silence, it resumes from the previous peak and climbs again.</li>
+</ol>
+<p>The drop depends on the range chip:</p>
+<table>
+<thead><tr><th>Setting</th><th>Drop</th></tr></thead>
+<tbody>
+<tr><td>Drop 25%</td><td>25% of the distance climbed</td></tr>
+<tr><td>Drop 50%</td><td>50% of the distance climbed</td></tr>
+<tr><td>Drop back all</td><td>All the way back to the start of the session</td></tr>
+</tbody>
+</table>
+<p>The target is shown below the tempo. A chime plays when the tempo first reaches it.</p>
+<p>Best for getting ready for a performance that runs faster or slower than you planned, from nerves or adrenaline.</p>
+</section>
+
+<section>
+<h2>Hold lock.</h2>
+<p>The lock sits to the left of stop. It is available in Auto mode only.</p>
+<p>When locked, it still listens, but the tempo does not move. The screen says "held at 120."</p>
+<p>Use it to stay at one tempo without turning listening off.</p>
+</section>
+
+<section>
+<h2>Target BPM.</h2>
+<p>Set in Settings under practice. Step Up and Spiral aim for it; Shuffle draws around it. Step Down uses its own floor.</p>
+<ul>
+<li>Step Up and Spiral: the ceiling. A chime plays when you reach it.</li>
+<li>Shuffle: the center point around which tempos are drawn.</li>
+<li>Step Down: uses its own floor, also in Settings.</li>
+</ul>
+<p>The screen flashes when the target is crossed. This resets when you stop or change modes.</p>
+</section>
+
+<section>
+<h2>The chime.</h2>
+<p>A short musical chime plays the first time your tempo crosses the target. You also feel three quick haptic taps.</p>
+<p>It fires once per session and resets when you stop or change modes. Shuffle mode never triggers a chime.</p>
+</section>
+
+<section>
+<h2>What the screen says.</h2>
+<table>
+<thead><tr><th>Sentence</th><th>What it means</th></tr></thead>
+<tbody>
+<tr><td><code>stay quiet, measuring the room.</code></td><td>Calibrating</td></tr>
+<tr><td><code>listening.</code></td><td>Waiting for you to play</td></tr>
+<tr><td><code>hearing you.</code></td><td>The mic hears your instrument</td></tr>
+<tr><td><code>next, 125 in 2 seconds.</code></td><td>Countdown before the tempo moves</td></tr>
+<tr><td><code>held at 120.</code></td><td>Hold lock is on</td></tr>
+<tr><td><code>review at 140.</code></td><td>Spiral is on its drop back step</td></tr>
+<tr><td><code>target reached.</code></td><td>You reached your goal tempo this session</td></tr>
+<tr><td><code>tap next when you're ready.</code></td><td>Manual mode</td></tr>
+</tbody>
+</table>
+</section>
+
+<section>
+<h2>All settings.</h2>
+<p>Tap the settings button at the top right. Settings is a black card with five tabs: time, practice, sound, color, about.</p>
+
+<h3>Session</h3>
+<table>
+<thead><tr><th>Setting</th><th>What it does</th><th>Default</th></tr></thead>
+<tbody>
+<tr><td>Beats per bar</td><td>Number of beats in each bar: 1 through 12</td><td>4</td></tr>
+<tr><td>Beat unit</td><td>The bottom number of the time signature: Quarter or Eighth</td><td>Quarter</td></tr>
+<tr><td>Subdivision</td><td>Adds ticks between beats: 8ths, triplets or 16ths. Default none.</td><td>None</td></tr>
+<tr><td>Tempo step</td><td>How much the tempo changes per round (1 to 20)</td><td>5</td></tr>
+<tr><td>Wait</td><td>Seconds of quiet before it moves (1 to 10)</td><td>2 s</td></tr>
+<tr><td>Target</td><td>The goal tempo for Step Up, Shuffle and Spiral (40 to 240)</td><td>200</td></tr>
+<tr><td>Floor</td><td>Where Step Down stops (40 to 240)</td><td>40</td></tr>
+</tbody>
+</table>
+
+<h3>Sound</h3>
+<table>
+<thead><tr><th>Setting</th><th>Options</th><th>Default</th></tr></thead>
+<tbody>
+<tr><td>Click</td><td>Woodblock or tactus.</td><td>Woodblock</td></tr>
+<tr><td>Listening sensitivity</td><td>Slider from low to high. Higher hears quieter playing; lower it in a noisy room.</td><td>Middle</td></tr>
+</tbody>
+</table>
+
+<h3>Color</h3>
+<table>
+<thead><tr><th>Setting</th><th>Options</th><th>Default</th></tr></thead>
+<tbody>
+<tr><td>Color</td><td>Yellow (default), green, coral, sky, lilac, paper or ink.</td><td>Yellow</td></tr>
+</tbody>
+</table>
+
+<h3>Support</h3>
+<ul>
+<li>Contact and feedback: opens an email addressed to us.</li>
+<li>User manual: opens this page in Safari.</li>
+</ul>
+</section>
+
+<section>
+<h2>Settings are saved automatically.</h2>
+<p>Your settings, including color theme, are saved as you change them and come back next time. Nothing to set up again.</p>
+</section>
+</div>
+</main>
+<footer class="foot">
+  <a class="wordmark" href="../">tempostep</a>
+  <ul>
+    <li><a href="../">home</a></li>
+    <li><a href="../manual/">manual</a></li>
+    <li><a href="../press/">press</a></li>
+    <li><a href="../privacy/">privacy</a></li>
+    <li><a href="mailto:tempostepapp@gmail.com">tempostepapp@gmail.com</a></li>
+  </ul>
+</footer>
+</body>
+</html>

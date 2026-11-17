@@ -1,0 +1,53 @@
+# TempoStep
+
+> An iPhone metronome that listens. When you stop playing, the tempo steps up on its own.
+
+TempoStep raises the tempo step by step as you practice. It uses the iPhone microphone to hear when you stop. After a short silence the tempo moves; when you start again, the next tempo is already running.
+
+Made by Alan Molina, an orchestral violinist who got tired of stopping mid-passage to reset the metronome by hand.
+
+- Platform: iPhone, iOS 17 or later
+- Price: $4.99, paid once. No subscription, no ads.
+- Version: 1.0
+- Support: tempostepapp@gmail.com
+
+## How a session runs
+
+1. Play. Set a starting tempo and press start. It measures the room for two seconds, then the click runs and the mic listens.
+2. Pause. Stop playing. TempoStep hears the quiet and counts down.
+3. Step. The tempo moves by the step you set. The screen flashes to another color for about a second. Start playing and the new tempo is already running.
+4. Target. At your target you get a chime, three haptic taps and the sentence "target reached."
+
+## Practice modes
+
+- Step Up (default): adds your step each time you stop, up to a target.
+- Shuffle: picks a random tempo within 10, 20 or 30 percent of the target on every stop. Based on research on interleaved practice (Carter & Grahn, 2016; Mathias & Goldman, 2025).
+- Spiral: climbs three steps, drops back by 25 percent, 50 percent or all the way, then climbs on.
+- Step Down: works down from a fast tempo to a floor you set.
+
+All four use the same microphone trigger.
+
+## Other features
+
+- Microphone calibration: a two-second room measurement each time you press start.
+- Background audio: auto advance keeps working while you use forScore, IMSLP, a tuner or another app.
+- Manual mode: listening off, no calibration. Press next to move up and back to return.
+- Tap tempo: tap along a few times to match a reference.
+- Hold tempo: the lock keeps the tempo in place while it keeps listening. Auto mode only.
+- Subdivisions: none, 8ths, triplets or 16ths.
+- Metres: 2/4, 3/4, 4/4, 5/4, 6/8, 7/8, 9/8 and 12/8 from a picker under the tempo. Compound metres accent every third beat.
+- Seven color themes: yellow (default), green, coral, sky, lilac, paper, ink.
+- Two click sounds: woodblock and tactus.
+- Controls hide after three seconds of playing. Tap the screen to bring them back. Long-press any control for a help card.
+
+## How it differs from ramp apps
+
+Some metronome apps raise the tempo on a bar count or a timer. TempoStep raises it when you stop, so the break between passes is yours.
+
+## Pages
+
+- Home: https://tactusworks.com/tempostep/
+- User manual: https://tactusworks.com/tempostep/manual/
+- Press kit: https://tactusworks.com/tempostep/press/
+- Privacy policy: https://tactusworks.com/tempostep/privacy/
+- App Store: https://apps.apple.com/us/app/tempostep-auto-metronome/id6762228387

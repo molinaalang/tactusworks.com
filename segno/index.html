@@ -1,0 +1,1514 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Segno Keeps Time</title>
+<meta name="description" content="Photograph the bars that keep tripping you up. Tap the first and last line. Then read them on your phone, on the stand, with both hands on your instrument. Nod, tap or say “next” to move on.">
+<link rel="canonical" href="https://tactusworks.com/segno/">
+<style>
+@font-face{font-family:"Archivo Black";font-weight:400;font-style:normal;font-display:swap;src:url("fonts/archivo-black.woff2") format("woff2")}
+@font-face{font-family:"Jost";font-weight:400;font-style:normal;font-display:swap;src:url("fonts/jost-400.woff2") format("woff2")}
+@font-face{font-family:"Jost";font-weight:500;font-style:normal;font-display:swap;src:url("fonts/jost-500.woff2") format("woff2")}
+@font-face{font-family:"Jost";font-weight:700;font-style:normal;font-display:swap;src:url("fonts/jost-700.woff2") format("woff2")}
+/* Layout: one score read top to bottom. Rehearsal marks A-D open each section, a metronome bar fixed at the bottom conducts every moving part. */
+:root{
+  --bg:#F7F1E4; --fg:#201C16; --line:#201C16; --card:#FFFDF6; --soft:#6A6253;
+  --p:#1B5E6B; --s:#F5D033; --t:#F0507A; --a:#F2762E;
+  --op:#F7F1E4; --os:#201C16; --ot:#201C16; --oa:#201C16;
+  --pp:#FFFDF6; --pi:#201C16;
+  --disp:"Archivo Black","Arial Black",Impact,sans-serif;
+  --body:"Jost","Futura","Century Gothic",system-ui,sans-serif;
+  --out:cubic-bezier(.23,1,.32,1); --inout:cubic-bezier(.77,0,.175,1);
+  --barh:64px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#16130F;--fg:#F7F1E4;--line:#F7F1E4;--card:#2A251D;--soft:#B5AC9A;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#16130F;--fg:#F7F1E4;--line:#F7F1E4;--card:#2A251D;--soft:#B5AC9A;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:400 1.0625rem/1.5 var(--body);padding-bottom:calc(var(--barh) + 56px)}
+.wrap{max-width:1100px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3,p,ul,ol{margin:0;padding:0}
+ul,ol{list-style:none}
+h2{font:400 clamp(1.7rem,5vw,3rem)/1.05 var(--disp);text-wrap:balance}
+h3{font:400 1.15rem/1.2 var(--disp)}
+p{max-width:60ch}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--a);outline-offset:3px}
+img{display:block}
+
+/* blocks and buttons */
+.blk{border:3px solid var(--line);background:var(--card);box-shadow:6px 6px 0 var(--line)}
+.btn,.chip{border:3px solid var(--line);background:var(--card);box-shadow:4px 4px 0 var(--line);padding:.45em .8em;font-weight:700;transition:transform .1s var(--out),box-shadow .1s var(--out)}
+.btn:active,.chip:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--line)}
+.chip{font-size:.92rem;padding:.3em .65em;box-shadow:3px 3px 0 var(--line)}
+.chip[aria-pressed="true"]{background:var(--s);color:var(--os)}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.lab{font-weight:700;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+
+/* hero */
+.hero{padding-block:28px 56px;display:grid;gap:28px}
+.top{display:flex;align-items:center;gap:12px;font-weight:700}
+.sign{width:38px;height:46px;flex:none}
+.logo{display:flex;gap:clamp(4px,1.2vw,12px);font:400 clamp(3rem,13vw,10rem)/1 var(--disp)}
+.logo span{width:1.2em;padding:.08em 0 .12em;text-align:center;border:3px solid var(--line);box-shadow:.06em .06em 0 var(--line);transition:transform .16s var(--out)}
+.logo span:nth-child(1),.logo span:nth-child(5){background:var(--p);color:var(--op)}
+.logo span:nth-child(2){background:var(--s);color:var(--os)}
+.logo span:nth-child(3){background:var(--t);color:var(--ot)}
+.logo span:nth-child(4){background:var(--a);color:var(--oa)}
+.logo span.hit{transform:translateY(-14%) rotate(-4deg)}
+.hero-grid{display:grid;gap:32px;align-items:center}
+.hero-copy{display:grid;gap:16px;min-width:0}
+.sub{font:400 clamp(1.3rem,3.6vw,2rem)/1.1 var(--disp)}
+.stores{display:flex;flex-wrap:wrap;gap:14px}
+.store{display:inline-block;text-decoration:none;border:3px solid var(--line);background:var(--line);color:var(--bg);padding:.55em 1em;font-weight:700;box-shadow:5px 5px 0 var(--t);transition:transform .1s var(--out),box-shadow .1s var(--out)}
+a.store:active{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--t)}
+.store small{display:block;font-weight:500;font-size:.72rem;opacity:.8}
+.cue{font-weight:700;display:flex;gap:10px;align-items:center}
+.cue i{width:14px;height:14px;background:var(--a);border:3px solid var(--line);flex:none}
+.stand{position:relative;justify-self:center;width:min(100%,520px);display:grid;gap:14px}
+.stand::before{content:"";position:absolute;right:-8px;top:-18px;width:44%;height:60%;background:radial-gradient(var(--t) 30%,transparent 33%) 0 0/14px 14px;z-index:0}
+.phone{position:relative;z-index:1;border:3px solid var(--line);background:#111;padding:9px;border-radius:26px;box-shadow:10px 10px 0 var(--p)}
+.phone img{width:100%;height:auto}
+.scr{position:relative;overflow:hidden;border-radius:15px}
+.scr::after{content:"";position:absolute;background:#111;border-radius:99px}
+.land .scr::after{left:1.3%;top:34%;width:4.3%;height:32%}
+.port .scr::after{top:1.3%;left:36%;width:28%;height:2.6%}
+/* hero reader demo, as the app's reader: page view = up to 3 lines turned together, a bar in the
+   margin beside them (PagePhotoLayout groups); close-up = one line, the rest faded toward the paper,
+   moving one screen per stop and holding there, last stop flush right (Reflow.carousel) */
+.rd{position:relative;aspect-ratio:1100/506;background:#fff;overflow:hidden}
+.rdc{position:absolute;top:0;bottom:0;right:0;overflow:hidden}
+.rdw{position:absolute;left:0;top:0;width:1400px;transform-origin:0 0;transition:transform .7s cubic-bezier(.15,.5,.5,1)}
+.rd .rdw img{display:block;width:1400px;height:1130px;max-width:none}
+.fd{position:absolute;left:0;width:1400px;background:rgba(255,255,255,.45);opacity:0;transition:opacity .3s,top .6s ease-in-out,height .6s ease-in-out}
+.mk{position:absolute;border-radius:99px;background:#F2762E;box-shadow:0 0 0 2px #fff;transition:top .7s cubic-bezier(.15,.5,.5,1),height .7s cubic-bezier(.15,.5,.5,1),opacity .2s}
+.rdcap{position:relative;z-index:1;font-weight:700;min-height:2.8em;margin:0}
+
+/* sections */
+section{padding-block:56px;border-top:3px solid var(--line);display:grid;gap:28px}
+.head{display:grid;gap:14px}
+.mark{display:inline-grid;place-items:center;min-width:56px;height:56px;padding:0 10px;justify-self:start;border:3px solid var(--line);background:var(--s);color:var(--os);font:400 1.6rem/1 var(--disp);box-shadow:5px 5px 0 var(--line)}
+.two{display:grid;gap:32px;align-items:start}
+.two>*{min-width:0}
+
+/* A: photo to practice */
+.sheet{position:relative;background:var(--pp);color:var(--pi);border:3px solid var(--line);box-shadow:8px 8px 0 var(--a);padding:22px 18px;display:grid;gap:12px;max-width:440px}
+.ln{position:relative;height:38px;padding:6px 0;border:2px dashed transparent;background-color:transparent;transition:opacity .2s,background-color .15s}
+.ln::before{content:"";display:block;height:25.5px;background:repeating-linear-gradient(var(--pi) 0 1.5px,transparent 1.5px 6px)}
+.ln.found{border-color:var(--pi)}
+.ln.sel{background-color:#F5D033;border-style:solid}
+.ln.dim{opacity:.28}
+.ln[data-tag]::after{content:attr(data-tag);position:absolute;right:-3px;top:-16px;background:var(--pi);color:var(--pp);font-weight:700;font-size:.72rem;padding:4px 9px;letter-spacing:.06em;text-transform:uppercase}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+.steps{display:grid;gap:12px}
+.steps li{display:grid;grid-template-columns:44px 1fr;gap:14px;align-items:start;padding:12px;border:3px solid transparent;transition:background-color .15s}
+.steps li b{display:grid;place-items:center;width:44px;height:44px;border:3px solid var(--line);background:var(--card);font:400 1.2rem/1 var(--disp)}
+.steps li.on{border-color:var(--line);background:var(--card);box-shadow:5px 5px 0 var(--p)}
+.steps li.on b{background:var(--a);color:var(--oa)}
+
+/* B: nod and turn */
+.stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:center;padding:22px;background:var(--p);color:var(--op);border:3px solid var(--line);box-shadow:8px 8px 0 var(--line)}
+.who{position:relative;justify-self:center;width:min(100%,210px);background:none;border:0;padding:0;color:inherit}
+.who svg{width:100%;height:auto;display:block}
+.bubble{position:absolute;right:-6px;top:0;background:var(--s);color:var(--os);border:3px solid var(--line);padding:6px 12px;font:400 1.1rem/1.3 var(--disp);opacity:0;transform:scale(.9);transform-origin:0 100%}
+.pg{position:relative;justify-self:center;width:min(100%,190px);aspect-ratio:3/4;overflow:hidden;border:3px solid var(--line);background:var(--line);perspective:700px}
+.leaf{position:absolute;inset:0;background:var(--pp);color:var(--pi);padding:14px 12px;display:grid;align-content:space-evenly}
+.leaf i{display:block;height:25.5px;background:repeating-linear-gradient(var(--pi) 0 1.5px,transparent 1.5px 6px)}
+.leaf b{position:absolute;right:8px;bottom:4px;font:400 1.5rem/1 var(--disp)}
+#cur{z-index:2}#nxt{z-index:1}
+.wipe{position:absolute;inset:0;z-index:4;background:var(--a);transform:translateX(-101%)}
+.slats{position:absolute;inset:0;z-index:4;display:grid;grid-template-rows:repeat(6,1fr);pointer-events:none}
+.slats i{background:var(--s);transform:scaleY(0)}
+.style-name{grid-column:1/-1;font:400 1.2rem/1 var(--disp);text-align:center}
+.opts{display:grid;gap:18px}
+.opts>div{display:grid;gap:10px}
+/* App backgrounds, quiet (test: section B = the app's Checkers, 34 px cells). Full width behind
+   the section, still, low contrast; the words sit on solid cards so the pattern never runs behind text. */
+body{overflow-x:clip}
+.bgp{position:relative;isolation:isolate}
+.bgp::before{content:"";position:absolute;z-index:-1;top:0;bottom:0;left:calc(50% - 50vw);right:calc(50% - 50vw);pointer-events:none}
+/* hero = Confetti (the app's seeded layout and hues, faded) */
+#top.bgp::before{background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22368%22%20height%3D%22368%22%3E%3Ccircle%20cx%3D%22-11%22%20cy%3D%22-9%22%20r%3D%226%22%20fill%3D%22%23FFD23F%22/%3E%3Ccircle%20cx%3D%22-11%22%20cy%3D%22359%22%20r%3D%226%22%20fill%3D%22%23FFD23F%22/%3E%3Ccircle%20cx%3D%22357%22%20cy%3D%22-9%22%20r%3D%226%22%20fill%3D%22%23FFD23F%22/%3E%3Ccircle%20cx%3D%22357%22%20cy%3D%22359%22%20r%3D%226%22%20fill%3D%22%23FFD23F%22/%3E%3Cpath%20d%3D%22M52%20-10L58%202L46%202Z%22%20fill%3D%22%23FF6B9D%22/%3E%3Cpath%20d%3D%22M52%20358L58%20370L46%20370Z%22%20fill%3D%22%23FF6B9D%22/%3E%3Crect%20x%3D%2286%22%20y%3D%22-5%22%20width%3D%2210.8%22%20height%3D%2210.8%22%20fill%3D%22%234ECDC4%22/%3E%3Crect%20x%3D%2286%22%20y%3D%22363%22%20width%3D%2210.8%22%20height%3D%2210.8%22%20fill%3D%22%234ECDC4%22/%3E%3Ccircle%20cx%3D%22132%22%20cy%3D%226%22%20r%3D%226%22%20fill%3D%22%23FF9F1C%22/%3E%3Ccircle%20cx%3D%22132%22%20cy%3D%22374%22%20r%3D%226%22%20fill%3D%22%23FF9F1C%22/%3E%3Cpath%20d%3D%22M195%20-14L201%20-2L189%20-2Z%22%20fill%3D%22%23FFD23F%22/%3E%3Cpath%20d%3D%22M195%20354L201%20366L189%20366Z%22%20fill%3D%22%23FFD23F%22/%3E%3Crect%20x%3D%22229%22%20y%3D%22-9%22%20width%3D%2210.8%22%20height%3D%2210.8%22%20fill%3D%22%23FF6B9D%22/%3E%3Crect%20x%3D%22229%22%20y%3D%22359%22%20width%3D%2210.8%22%20height%3D%2210.8%22%20fill%3D%22%23FF6B9D%22/%3E%3Ccircle%20cx%3D%22275%22%20cy%3D%222%22%20r%3D%226%22%20fill%3D%22%234ECDC4%22/%3E%3Ccircle%20cx%3D%22275%22%20cy%3D%22370%22%20r%3D%226%22%20fill%3D%22%234ECDC4%22/%3E%3Cpath%20d%3D%22M315%201L321%2013L309%2013Z%22%20fill%3D%22%23FF9F1C%22/%3E%3Cpath%20d%3D%22M315%20369L321%20381L309%20381Z%22%20fill%3D%22%23FF9F1C%22/%3E%3Crect%20x%3D%22-9%22%20y%3D%2239%22%20width%3D%2210.8%22%20height%3D%2210.8%22%20fill%3D%22%23FF9F1C%22/%3E%3Crect%20x%3D%22359%22%20y%3D%2239%22%20width%3D%2210.8%22%20height%3D%2210.8%22%20fill%3D%22%23FF9F1C%22/%3E%3Ccircle%20cx%3D%2237%22%20cy%3D%2250%22%20r%3D%226%22%20fill%3D%22%23FFD23F%22/%3E%3Cpath%20d%3D%22M100%2049L106%2061L94%2061Z%22%20fill%3D%22%23FF6B9D%22/%3E%3Crect%20x%3D%22134%22%20y%3D%2235%22%20width%3D%2210.8%22%20height%3D%2210.8%22%20fill%3D%22%234ECDC4%22/%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%2246%22%20r%3D%226%22%20fill%3D%22%23FF9F1C%22/%3E%3Cpath%20d%3D%22M220%2045L226%2057L214%2057Z%22%20fill%3D%22%23FFD23F%22/%3E%3Crect%20x%3D%22277%22%20y%3D%2231%22%20width%3D%2210.8%22%20height%3D%2210.8%22%20fill%3D%22%23FF6B9D%22/%3E%3Ccircle%20cx%3D%22323%22%20cy%3D%2242%22%20r%3D%226%22%20fill%3D%22%234ECDC4%22/%3E%3Cpath%20d%3D%22M5%2093L11%20105L-1%20105Z%22%20fill%3D%22%234ECDC4%22/%3E%3Cpath%20d%3D%22M373%2093L379%20105L367%20105Z%22%20fill%3D%22%234ECDC4%22/%3E%3Crect%20x%3D%2239%22%20y%3D%2279%22%20width%3D%2210.8%22%20height%3D%2210.8%22%20fill%3D%22%23FF9F1C%22/%3E%3Ccircle%20cx%3D%2285%22%20cy%3D%2290%22%20r%3D%226%22%20fill%3D%22%23FFD23F%22/%3E%3Cpath%20d%3D%22M148%2089L154%20101L142%20101Z%22%20fill%3D%22%23FF6B9D%22/%3E%3Crect%20x%3D%22182%22%20y%3D%2294%22%20width%3D%2210.8%22%20height%3D%2210.8%22%20fill%3D%22%234ECDC4%22/%3E%3Ccircle%20cx%3D%22228%22%20cy%3D%2286%22%20r%3D%226%22%20fill%3D%22%23FF9F1C%22/%3E%3Cpath%20d%3D%22M268%2085L274%2097L262%2097Z%22%20fill%3D%22%23FFD23F%22/%3E%3Crect%20x%3D%22325%22%20y%3D%2290%22%20width%3D%2210.8%22%20height%3D%2210.8%22%20fill%3D%22%23FF6B9D%22/%3E%3Ccircle%20cx%3D%22-10%22%20cy%3D%22134%22%20r%3D%226%22%20fill%3D%22%23FF6B9D%22/%3E%3Ccircle%20cx%3D%22358%22%20cy%3D%22134%22%20r%3D%226%22%20fill%3D%22%23FF6B9D%22/%3E%3Cpath%20d%3D%22M53%20133L59%20145L47%20145Z%22%20fill%3D%22%234ECDC4%22/%3E%3Crect%20x%3D%2287%22%20y%3D%22138%22%20width%3D%2210.8%22%20height%3D%2210.8%22%20fill%3D%22%23FF9F1C%22/%3E%3Ccircle%20cx%3D%22133%22%20cy%3D%22130%22%20r%3D%226%22%20fill%3D%22%23FFD23F%22/%3E%3Cpath%20d%3D%22M173%20129L179%20141L167%20141Z%22%20fill%3D%22%23FF6B9D%22/%3E%3Crect%20x%3D%22230%22%20y%3D%22134%22%20width%3D%2210.8%22%20height%3D%2210.8%22%20fill%3D%22%234ECDC4%22/%3E%3Ccircle%20cx%3D%22276%22%20cy%3D%22145%22%20r%3D%226%22%20fill%3D%22%23FF9F1C%22/%3E%3Cpath%20d%3D%22M316%20125L322%20137L310%20137Z%22%20fill%3D%22%23FFD23F%22/%3E%3Crect%20x%3D%22-8%22%20y%3D%22182%22%20width%3D%2210.8%22%20height%3D%2210.8%22%20fill%3D%22%23FFD23F%22/%3E%3Crect%20x%3D%22360%22%20y%3D%22182%22%20width%3D%2210.8%22%20height%3D%2210.8%22%20fill%3D%22%23FFD23F%22/%3E%3Ccircle%20cx%3D%2238%22%20cy%3D%22193%22%20r%3D%226%22%20fill%3D%22%23FF6B9D%22/%3E%3Cpath%20d%3D%22M101%20173L107%20185L95%20185Z%22%20fill%3D%22%234ECDC4%22/%3E%3Crect%20x%3D%22135%22%20y%3D%22178%22%20width%3D%2210.8%22%20height%3D%2210.8%22%20fill%3D%22%23FF9F1C%22/%3E%3Ccircle%20cx%3D%22181%22%20cy%3D%22189%22%20r%3D%226%22%20fill%3D%22%23FFD23F%22/%3E%3Cpath%20d%3D%22M221%20169L227%20181L215%20181Z%22%20fill%3D%22%23FF6B9D%22/%3E%3Crect%20x%3D%22278%22%20y%3D%22174%22%20width%3D%2210.8%22%20height%3D%2210.8%22%20fill%3D%22%234ECDC4%22/%3E%3Ccircle%20cx%3D%22324%22%20cy%3D%22185%22%20r%3D%226%22%20fill%3D%22%23FF9F1C%22/%3E%3Cpath%20d%3D%22M6%20217L12%20229L0%20229Z%22%20fill%3D%22%23FF9F1C%22/%3E%3Cpath%20d%3D%22M374%20217L380%20229L368%20229Z%22%20fill%3D%22%23FF9F1C%22/%3E%3Crect%20x%3D%2240%22%20y%3D%22222%22%20width%3D%2210.8%22%20height%3D%2210.8%22%20fill%3D%22%23FFD23F%22/%3E%3Ccircle%20cx%3D%2286%22%20cy%3D%22233%22%20r%3D%226%22%20fill%3D%22%23FF6B9D%22/%3E%3Cpath%20d%3D%22M149%20232L155%20244L143%20244Z%22%20fill%3D%22%234ECDC4%22/%3E%3Crect%20x%3D%22183%22%20y%3D%22218%22%20width%3D%2210.8%22%20height%3D%2210.8%22%20fill%3D%22%23FF9F1C%22/%3E%3Ccircle%20cx%3D%22229%22%20cy%3D%22229%22%20r%3D%226%22%20fill%3D%22%23FFD23F%22/%3E%3Cpath%20d%3D%22M269%20228L275%20240L263%20240Z%22%20fill%3D%22%23FF6B9D%22/%3E%3Crect%20x%3D%22326%22%20y%3D%22233%22%20width%3D%2210.8%22%20height%3D%2210.8%22%20fill%3D%22%234ECDC4%22/%3E%3Ccircle%20cx%3D%22-9%22%20cy%3D%22277%22%20r%3D%226%22%20fill%3D%22%234ECDC4%22/%3E%3Ccircle%20cx%3D%22359%22%20cy%3D%22277%22%20r%3D%226%22%20fill%3D%22%234ECDC4%22/%3E%3Cpath%20d%3D%22M54%20276L60%20288L48%20288Z%22%20fill%3D%22%23FF9F1C%22/%3E%3Crect%20x%3D%2288%22%20y%3D%22262%22%20width%3D%2210.8%22%20height%3D%2210.8%22%20fill%3D%22%23FFD23F%22/%3E%3Ccircle%20cx%3D%22134%22%20cy%3D%22273%22%20r%3D%226%22%20fill%3D%22%23FF6B9D%22/%3E%3Cpath%20d%3D%22M174%20272L180%20284L168%20284Z%22%20fill%3D%22%234ECDC4%22/%3E%3Crect%20x%3D%22231%22%20y%3D%22277%22%20width%3D%2210.8%22%20height%3D%2210.8%22%20fill%3D%22%23FF9F1C%22/%3E%3Ccircle%20cx%3D%22277%22%20cy%3D%22269%22%20r%3D%226%22%20fill%3D%22%23FFD23F%22/%3E%3Cpath%20d%3D%22M317%20268L323%20280L311%20280Z%22%20fill%3D%22%23FF6B9D%22/%3E%3Crect%20x%3D%22-7%22%20y%3D%22325%22%20width%3D%2210.8%22%20height%3D%2210.8%22%20fill%3D%22%23FF6B9D%22/%3E%3Crect%20x%3D%22361%22%20y%3D%22325%22%20width%3D%2210.8%22%20height%3D%2210.8%22%20fill%3D%22%23FF6B9D%22/%3E%3Ccircle%20cx%3D%2239%22%20cy%3D%22317%22%20r%3D%226%22%20fill%3D%22%234ECDC4%22/%3E%3Cpath%20d%3D%22M102%20316L108%20328L96%20328Z%22%20fill%3D%22%23FF9F1C%22/%3E%3Crect%20x%3D%22136%22%20y%3D%22321%22%20width%3D%2210.8%22%20height%3D%2210.8%22%20fill%3D%22%23FFD23F%22/%3E%3Ccircle%20cx%3D%22182%22%20cy%3D%22313%22%20r%3D%226%22%20fill%3D%22%23FF6B9D%22/%3E%3Cpath%20d%3D%22M222%20312L228%20324L216%20324Z%22%20fill%3D%22%234ECDC4%22/%3E%3Crect%20x%3D%22279%22%20y%3D%22317%22%20width%3D%2210.8%22%20height%3D%2210.8%22%20fill%3D%22%23FF9F1C%22/%3E%3Ccircle%20cx%3D%22325%22%20cy%3D%22328%22%20r%3D%226%22%20fill%3D%22%23FFD23F%22/%3E%3C/svg%3E") 0 0/368px 368px;opacity:.2}
+/* A = Starburst: 20 rays from the top-right corner */
+#a.bgp::before{background:repeating-conic-gradient(from 180deg at 100% 0,color-mix(in srgb,var(--fg) 6%,transparent) 0 2.25deg,transparent 0 4.5deg)}
+/* B = Checkers: 34 px cells */
+#b.bgp::before{background:repeating-conic-gradient(color-mix(in srgb,var(--fg) 7%,transparent) 0 25%,transparent 0 50%) 0 0/68px 68px}
+/* C = Bullseye: 3 px rings every 26 px, centred high on the right */
+#c.bgp::before{background:repeating-radial-gradient(circle at 82% 18%,color-mix(in srgb,var(--fg) 8%,transparent) 0 3px,transparent 3px 26px)}
+/* D = Rolling Staff, held still: five wavy lines, a group every 60 px */
+#d.bgp::before{background:color-mix(in srgb,var(--fg) 20%,transparent);-webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22120%22%20height%3D%2260%22%3E%3Cpolyline%20points%3D%220%2C6.00%205%2C7.04%2010%2C8.00%2015%2C8.83%2020%2C9.46%2025%2C9.86%2030%2C10.00%2035%2C9.86%2040%2C9.46%2045%2C8.83%2050%2C8.00%2055%2C7.04%2060%2C6.00%2065%2C4.96%2070%2C4.00%2075%2C3.17%2080%2C2.54%2085%2C2.14%2090%2C2.00%2095%2C2.14%20100%2C2.54%20105%2C3.17%20110%2C4.00%20115%2C4.96%20120%2C6.00%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%221.2%22/%3E%3Cpolyline%20points%3D%220%2C14.00%205%2C15.04%2010%2C16.00%2015%2C16.83%2020%2C17.46%2025%2C17.86%2030%2C18.00%2035%2C17.86%2040%2C17.46%2045%2C16.83%2050%2C16.00%2055%2C15.04%2060%2C14.00%2065%2C12.96%2070%2C12.00%2075%2C11.17%2080%2C10.54%2085%2C10.14%2090%2C10.00%2095%2C10.14%20100%2C10.54%20105%2C11.17%20110%2C12.00%20115%2C12.96%20120%2C14.00%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%221.2%22/%3E%3Cpolyline%20points%3D%220%2C22.00%205%2C23.04%2010%2C24.00%2015%2C24.83%2020%2C25.46%2025%2C25.86%2030%2C26.00%2035%2C25.86%2040%2C25.46%2045%2C24.83%2050%2C24.00%2055%2C23.04%2060%2C22.00%2065%2C20.96%2070%2C20.00%2075%2C19.17%2080%2C18.54%2085%2C18.14%2090%2C18.00%2095%2C18.14%20100%2C18.54%20105%2C19.17%20110%2C20.00%20115%2C20.96%20120%2C22.00%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%221.2%22/%3E%3Cpolyline%20points%3D%220%2C30.00%205%2C31.04%2010%2C32.00%2015%2C32.83%2020%2C33.46%2025%2C33.86%2030%2C34.00%2035%2C33.86%2040%2C33.46%2045%2C32.83%2050%2C32.00%2055%2C31.04%2060%2C30.00%2065%2C28.96%2070%2C28.00%2075%2C27.17%2080%2C26.54%2085%2C26.14%2090%2C26.00%2095%2C26.14%20100%2C26.54%20105%2C27.17%20110%2C28.00%20115%2C28.96%20120%2C30.00%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%221.2%22/%3E%3Cpolyline%20points%3D%220%2C38.00%205%2C39.04%2010%2C40.00%2015%2C40.83%2020%2C41.46%2025%2C41.86%2030%2C42.00%2035%2C41.86%2040%2C41.46%2045%2C40.83%2050%2C40.00%2055%2C39.04%2060%2C38.00%2065%2C36.96%2070%2C36.00%2075%2C35.17%2080%2C34.54%2085%2C34.14%2090%2C34.00%2095%2C34.14%20100%2C34.54%20105%2C35.17%20110%2C36.00%20115%2C36.96%20120%2C38.00%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%221.2%22/%3E%3C/svg%3E") 0 0/120px 60px;mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22120%22%20height%3D%2260%22%3E%3Cpolyline%20points%3D%220%2C6.00%205%2C7.04%2010%2C8.00%2015%2C8.83%2020%2C9.46%2025%2C9.86%2030%2C10.00%2035%2C9.86%2040%2C9.46%2045%2C8.83%2050%2C8.00%2055%2C7.04%2060%2C6.00%2065%2C4.96%2070%2C4.00%2075%2C3.17%2080%2C2.54%2085%2C2.14%2090%2C2.00%2095%2C2.14%20100%2C2.54%20105%2C3.17%20110%2C4.00%20115%2C4.96%20120%2C6.00%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%221.2%22/%3E%3Cpolyline%20points%3D%220%2C14.00%205%2C15.04%2010%2C16.00%2015%2C16.83%2020%2C17.46%2025%2C17.86%2030%2C18.00%2035%2C17.86%2040%2C17.46%2045%2C16.83%2050%2C16.00%2055%2C15.04%2060%2C14.00%2065%2C12.96%2070%2C12.00%2075%2C11.17%2080%2C10.54%2085%2C10.14%2090%2C10.00%2095%2C10.14%20100%2C10.54%20105%2C11.17%20110%2C12.00%20115%2C12.96%20120%2C14.00%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%221.2%22/%3E%3Cpolyline%20points%3D%220%2C22.00%205%2C23.04%2010%2C24.00%2015%2C24.83%2020%2C25.46%2025%2C25.86%2030%2C26.00%2035%2C25.86%2040%2C25.46%2045%2C24.83%2050%2C24.00%2055%2C23.04%2060%2C22.00%2065%2C20.96%2070%2C20.00%2075%2C19.17%2080%2C18.54%2085%2C18.14%2090%2C18.00%2095%2C18.14%20100%2C18.54%20105%2C19.17%20110%2C20.00%20115%2C20.96%20120%2C22.00%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%221.2%22/%3E%3Cpolyline%20points%3D%220%2C30.00%205%2C31.04%2010%2C32.00%2015%2C32.83%2020%2C33.46%2025%2C33.86%2030%2C34.00%2035%2C33.86%2040%2C33.46%2045%2C32.83%2050%2C32.00%2055%2C31.04%2060%2C30.00%2065%2C28.96%2070%2C28.00%2075%2C27.17%2080%2C26.54%2085%2C26.14%2090%2C26.00%2095%2C26.14%20100%2C26.54%20105%2C27.17%20110%2C28.00%20115%2C28.96%20120%2C30.00%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%221.2%22/%3E%3Cpolyline%20points%3D%220%2C38.00%205%2C39.04%2010%2C40.00%2015%2C40.83%2020%2C41.46%2025%2C41.86%2030%2C42.00%2035%2C41.86%2040%2C41.46%2045%2C40.83%2050%2C40.00%2055%2C39.04%2060%2C38.00%2065%2C36.96%2070%2C36.00%2075%2C35.17%2080%2C34.54%2085%2C34.14%2090%2C34.00%2095%2C34.14%20100%2C34.54%20105%2C35.17%20110%2C36.00%20115%2C36.96%20120%2C38.00%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%221.2%22/%3E%3C/svg%3E") 0 0/120px 60px}
+/* Fine = Polka: 4 px dots every 24 px */
+#fine.bgp::before{background:radial-gradient(circle,color-mix(in srgb,var(--fg) 16%,transparent) 2px,transparent 2.5px) 0 0/24px 24px}
+.hero .top{justify-self:start;background:var(--card);border:3px solid var(--line);box-shadow:4px 4px 0 var(--line);padding:6px 14px 6px 10px}
+.rdcap.panel{padding:10px 14px}
+.panel{background:var(--card);border:3px solid var(--line);box-shadow:5px 5px 0 var(--line);padding:18px}
+.head.panel{justify-self:start;max-width:720px}
+.note{min-height:3em}
+
+/* C: tools */
+.grid{display:grid;gap:22px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.tool{padding:20px;display:grid;gap:12px;align-content:start;min-width:0}
+.tool:nth-child(3n+1){box-shadow:6px 6px 0 var(--p)}
+.tool:nth-child(3n+2){box-shadow:6px 6px 0 var(--t)}
+.tool:nth-child(3n){box-shadow:6px 6px 0 var(--a)}
+.tool img{width:100%;height:auto;border:3px solid var(--line)}
+.hz{display:flex;align-items:center;gap:12px}
+.hz input{flex:1;min-width:0;accent-color:var(--t)}
+.hz output{font:400 1.3rem/1 var(--disp);font-variant-numeric:tabular-nums;min-width:4.6em;text-align:right}
+#sing{background:var(--t);color:var(--ot);font-size:1.2rem}
+.singer{display:block;width:min(100%,230px);aspect-ratio:1;justify-self:center;border-radius:50%;border:4px solid #201C16;box-shadow:5px 5px 0 var(--a);cursor:pointer}
+@keyframes sway{from{transform:rotate(-3deg)}to{transform:rotate(3deg)}}
+@keyframes shake{from{transform:translateX(-1.5px)}to{transform:translateX(1.5px)}}
+@keyframes note{from{transform:translate(132px,86px);opacity:0}15%{opacity:1}80%{opacity:1}to{transform:translate(186px,16px);opacity:0}}
+@keyframes drip{from{transform:translateY(0)}to{transform:translateY(40px);opacity:0}}
+.takes{display:grid;gap:8px}
+.takes li{display:flex;align-items:center;gap:10px;border:3px solid var(--line);padding:4px 4px 4px 12px;font-weight:700;font-variant-numeric:tabular-nums}
+.takes span{flex:1}
+.takes button{width:40px;height:40px;border:0;background:none;font-size:1.4rem;line-height:1;color:var(--soft)}
+.takes button[aria-pressed="true"]{background:var(--a);color:var(--oa)}
+.ink{background:var(--pp);border:3px solid var(--line);display:block;width:100%;height:auto}
+
+/* D: make it yours */
+.pals{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(132px,1fr))}
+.pal{display:grid;gap:8px;padding:8px;text-align:left;font-weight:700;font-size:.92rem;border:3px solid var(--line);background:var(--card);box-shadow:4px 4px 0 var(--line);transition:transform .1s var(--out),box-shadow .1s var(--out)}
+.pal:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--line)}
+.pal[aria-pressed="true"]{box-shadow:4px 4px 0 var(--a);background:var(--s);color:var(--os)}
+.pal i{display:grid;grid-template-columns:repeat(4,1fr);height:34px;border:2px solid var(--line)}
+.pal i u{display:block}
+.bgs{display:flex;flex-wrap:wrap;gap:8px;font-size:.9rem;font-weight:500}
+.bgs li{border:2px solid var(--line);padding:5px 11px}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;max-width:440px}
+.week li{display:grid;gap:6px;text-align:center;font-weight:700;font-size:.8rem}
+.week li::before{content:"";height:64px;border:3px solid var(--line);background:var(--card);transition:background-color .15s}
+.week li.on:nth-child(4n+1)::before{background:var(--p)}
+.week li.on:nth-child(4n+2)::before{background:var(--s)}
+.week li.on:nth-child(4n+3)::before{background:var(--t)}
+.week li.on:nth-child(4n)::before{background:var(--a)}
+
+/* Fine */
+.fine{background:var(--s);color:var(--os);border:3px solid var(--line);box-shadow:8px 8px 0 var(--line);padding:clamp(22px,5vw,48px);display:grid;gap:22px}
+.fine .store{box-shadow:5px 5px 0 var(--p);background:#201C16;color:#F7F1E4;border-color:#201C16}
+.facts{display:flex;flex-wrap:wrap;gap:8px 22px;font:400 1.15rem/1.2 var(--disp)}
+.legal{color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px}.legal small{font-weight:500;opacity:.7;margin-left:4px}
+footer{padding-block:36px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;border-top:3px solid var(--line);margin-top:56px}
+.ds{display:inline-flex;align-items:center;gap:10px;background:var(--card)}
+.ds svg{width:22px;height:27px}
+
+/* transport bar */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--line);color:var(--bg);padding:0 max(16px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(16px,env(safe-area-inset-left,0px))}
+.beats{display:flex;gap:4px;height:8px;margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)))}
+.beats i{flex:1;background:var(--soft)}
+.beats i.on{background:var(--a)}
+.beats i.on:first-child{background:var(--t)}
+.ctl{max-width:1100px;margin:0 auto;height:calc(var(--barh) - 8px);display:flex;align-items:center;gap:6px}
+.ctl button{height:40px;border:2px solid var(--bg);background:transparent;color:var(--bg);font-weight:700;padding:0 8px;white-space:nowrap;transition:transform .1s var(--out)}
+.ctl button:active{transform:scale(.95)}
+#go{background:var(--a);color:var(--oa);border-color:var(--a);min-width:98px}
+.bpm{display:flex;align-items:center}
+.bpm button{width:30px;padding:0;font-size:1.2rem}
+.bpm output{width:46px;text-align:center;font:400 1.15rem/1 var(--disp);font-variant-numeric:tabular-nums}
+#pause{min-width:62px}
+@media (max-width:359px){#tap{display:none}}
+.info{margin-left:auto;font-weight:700;font-size:.9rem;display:none;font-variant-numeric:tabular-nums}
+
+@media (min-width:640px){.info{display:block}}
+@media (min-width:860px){
+  .hero-grid{grid-template-columns:1fr 1fr}
+  .two{grid-template-columns:1fr 1fr}
+  .wide{grid-column:span 2}
+}
+@media (hover:hover) and (pointer:fine){
+  .btn:hover,.chip:hover,.pal:hover{transform:translate(-1px,-1px)}
+  .btn:active,.chip:active,.pal:active{transform:translate(3px,3px)}
+}
+@media (prefers-reduced-motion:reduce){
+  .logo span,.btn,.chip,.pal,.store,.rdw,.fd,.mk{transition:none}
+  .logo span.hit{transform:none;outline:4px solid var(--fg)}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header class="hero bgp" id="top">
+  <div class="top">
+    <svg class="sign" viewBox="0 0 42 52" aria-hidden="true"><path d="M31 11C14 2 4 22 21 27s7 25-10 15" fill="none" stroke="var(--fg)" stroke-width="5" stroke-linecap="round"/><path d="M35 5 7 47" stroke="var(--fg)" stroke-width="3.5" stroke-linecap="round"/><circle cx="7" cy="22" r="3.6" fill="var(--t)"/><circle cx="35" cy="32" r="3.6" fill="var(--t)"/></svg>
+    <span>Segno: Fun Score Reader</span>
+  </div>
+  <h1 class="logo" aria-label="Segno"><span>S</span><span>E</span><span>G</span><span>N</span><span>O</span></h1>
+  <div class="hero-grid">
+    <div class="hero-copy panel">
+      <p class="sub">Big notes on a small screen.</p>
+      <p>Photograph the bars that keep tripping you up. Tap the first and last line. Then read them on your phone, on the stand, with both hands on your instrument. Three lines at a time, or zoom in until one line fills the screen and step along it. Nod, tap or say “next” to move on.</p>
+      <div class="stores">
+        <span class="store">App Store<small>iPhone and iPad · coming soon</small></span>
+        <span class="store">Google Play<small>Android · coming soon</small></span>
+      </div>
+      <p class="cue"><i></i>This page keeps time. Turn the sound on at the bottom.</p>
+    </div>
+    <div class="stand">
+      <div class="phone land"><div class="scr"><div class="rd" role="img" aria-label="Segno's reader on a phone turned sideways: three lines of a violin part, marked in the margin, move up three at a time; then the view zooms in to one line and moves along it one screen at a time.">
+        <div class="rdc" id="rdc"><div class="rdw" id="rdw"><img src="img/lines.jpg" width="1400" height="1130" alt=""><i class="fd" id="fdT"></i><i class="fd" id="fdB"></i></div></div><i class="mk" id="mk"></i></div></div></div>
+      <p class="rdcap panel" id="rdcap">Up to three lines, marked in the margin. A nod or tap moves on to the next three.</p>
+    </div>
+  </div>
+</header>
+
+<section id="a" class="bgp">
+  <div class="head panel"><div class="mark tick">A</div><h2>From photo to practice in four beats.</h2></div>
+  <div class="two">
+    <div class="sheet" id="sheet" aria-hidden="true">
+      <div class="ln found dim"></div><div class="ln found sel" data-tag="first"></div><div class="ln found sel"></div><div class="ln found sel" data-tag="last"></div><div class="ln found dim"></div><div class="ln found dim"></div>
+      <div class="flash"></div>
+    </div>
+    <ol class="steps panel" id="steps">
+      <li><b>1</b><div><h3>Snap</h3><p>Use the camera, the document scanner, a photo you already took, or a PDF.</p></div></li>
+      <li><b>2</b><div><h3>First line</h3><p>Segno finds each line of music, on your phone. Tap the line where your passage starts.</p></div></li>
+      <li><b>3</b><div><h3>Last line</h3><p>Tap where it ends. Your bowings, fingerings and pencil marks come with it.</p></div></li>
+      <li class="on"><b>4</b><div><h3>Practise</h3><p>Turn the phone sideways and read three lines at a time, or zoom in to one. On iPad and larger tablets you can also read a whole page.</p></div></li>
+    </ol>
+  </div>
+</section>
+
+<section id="b" class="bgp">
+  <div class="head panel"><div class="mark tick">B</div><h2>Nod, tap or say “next”.</h2>
+  <p>Tap the music to move on, or go hands-free: nod and voice stay off until you switch them on, and nodding works with glasses. Tap the face to try one.</p></div>
+  <div class="two">
+    <div class="stage">
+      <button class="who" id="who" aria-label="Turn the page">
+        <svg viewBox="0 0 120 132" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" aria-hidden="true">
+          <path d="M18 130q42-36 84 0M60 96v10"/><circle cx="60" cy="56" r="40"/>
+          <g id="face"><g id="brows"><path d="M38 40h16M66 40h16"/></g><circle cx="46" cy="53" r="3.5" fill="currentColor"/><circle cx="74" cy="53" r="3.5" fill="currentColor"/><path d="M48 74q12 9 24 0"/>
+          <g id="specs"><rect x="33" y="44" width="24" height="18"/><rect x="63" y="44" width="24" height="18"/><path d="M57 51h6"/></g></g>
+        </svg>
+        <span class="bubble" id="bubble">next</span>
+      </button>
+      <div class="pg" id="pg" aria-hidden="true">
+        <div class="leaf" id="nxt"><i></i><i></i><i></i><i></i><i></i><b>2</b></div>
+        <div class="leaf" id="cur"><i></i><i></i><i></i><i></i><i></i><b>1</b></div>
+        <div class="wipe" id="wipe"></div>
+        <div class="slats" id="slats"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+      <div class="style-name" id="sname" aria-live="polite">Glide</div>
+    </div>
+    <div class="opts panel">
+      <div><span class="lab">Turn with</span>
+        <div class="chips" id="trig"><button class="chip" aria-pressed="true">Nod</button><button class="chip" aria-pressed="false">Tap</button><button class="chip" aria-pressed="false">Voice</button><button class="chip" id="gl" aria-pressed="true">Glasses</button></div>
+        <p class="note" id="tnote">A small chin-lift turns the page. Works on iPhone, iPad and Android.</p></div>
+      <div><span class="lab">Seven turn styles</span>
+        <div class="chips" id="styles"></div>
+        <p>The showy ones are for the whole-page view, on iPad and larger tablets held upright. On a phone the lines just glide.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="c" class="bgp">
+  <div class="head panel"><div class="mark tick">C</div><h2>The rest of the practice room.</h2></div>
+  <div class="grid">
+    <div class="tool blk wide">
+      <h3>Metronome with grooves</h3>
+      <p>Pick a drum groove or a plain click, and tap the tempo in. This page runs on it: it is the bar at the bottom.</p>
+      <span class="lab">Eight grooves</span>
+      <div class="chips" id="grooves"></div>
+      <span class="lab">Or a plain click</span>
+      <div class="chips" id="click"></div>
+    </div>
+    <div class="tool blk">
+      <img src="img/ios-04-metronome.jpg" width="1100" height="506" alt="The metronome open over a page of music, set to 108 beats a minute">
+      <p>Raise your eyebrows mid-bar and the drummer plays a fill. Uses the front camera, on iPhone, iPad and Android.</p>
+    </div>
+    <div class="tool blk">
+      <h3>Tuner that sings</h3>
+      <p>A singer holds your A, anywhere from 415 to 446 Hz, for as long as the breath lasts. A synth and a reed organ can take over. Here each stage lasts 5 seconds; in the app, 10.</p>
+      <canvas class="singer" id="singer" width="460" height="460" role="img" aria-label="The tuner's singer, in its round window"></canvas>
+      <div class="hz"><input type="range" id="hz" min="415" max="446" value="440" aria-label="Pitch of A in hertz"><output id="hzo" for="hz">440 Hz</output></div>
+      <button class="btn" id="sing" aria-pressed="false">Sing an A</button>
+    </div>
+    <div class="tool blk">
+      <h3>Recorder</h3>
+      <p>Segno keeps your last three takes of each passage. Star the one worth keeping.</p>
+      <ul class="takes" id="takes">
+        <li><span>Take 3 · 0:42</span><button aria-pressed="false" aria-label="Star take 3">★</button></li>
+        <li><span>Take 2 · 0:39</span><button aria-pressed="true" aria-label="Star take 2">★</button></li>
+        <li><span>Take 1 · 0:51</span><button aria-pressed="false" aria-label="Star take 1">★</button></li>
+      </ul>
+    </div>
+    <div class="tool blk">
+      <h3>Pen and highlighter</h3>
+      <svg class="ink" viewBox="0 0 300 90" role="img" aria-label="A stave with a highlighted bar and a pencilled circle">
+        <path d="M70 45h110" stroke="#F5D033" stroke-width="34" opacity=".75"/>
+        <path d="M12 27h276M12 36h276M12 45h276M12 54h276M12 63h276M95 27v36M190 27v36" stroke="#201C16" stroke-width="1.5"/>
+        <g fill="#201C16"><ellipse cx="40" cy="54" rx="6" ry="4.5"/><ellipse cx="66" cy="45" rx="6" ry="4.5"/><ellipse cx="120" cy="40" rx="6" ry="4.5"/><ellipse cx="150" cy="49" rx="6" ry="4.5"/><ellipse cx="215" cy="58" rx="6" ry="4.5"/><ellipse cx="250" cy="45" rx="6" ry="4.5"/></g>
+        <path d="M232 45c0-17 36-19 37-1s-34 21-38 3" fill="none" stroke="#F0507A" stroke-width="3" stroke-linecap="round"/>
+        <path d="M118 14l5 9 5-9" fill="none" stroke="#F0507A" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+      <p>Your ink stays on the page in every view. Apple Pencil works on iPad.</p>
+    </div>
+    <div class="tool blk">
+      <h3>Sections, parts and PDF</h3>
+      <p>Mark sections inside a passage and join separate parts into one. Export every page as a PDF with your ink on it.</p>
+    </div>
+    <div class="tool blk wide">
+      <h3>Sync</h3>
+      <p>iCloud keeps your iPhone and iPad together. On Android you can switch on a hidden Google Drive folder, over Wi-Fi only if you like.</p>
+    </div>
+  </div>
+</section>
+
+<section id="d" class="bgp">
+  <div class="head panel"><div class="mark tick">D</div><h2>Dress it your way.</h2>
+  <p>Eight colour schemes come with the app. Pick one and this page wears it.</p></div>
+  <div class="pals" id="pals"></div>
+  <div>
+    <div class="opts panel">
+      <div><h3>21 reader backgrounds</h3>
+        <ul class="bgs" id="bgs"></ul></div>
+      <div><h3>A stripe for every day you practise</h3>
+        <ul class="week" id="week"><li class="on">Mon</li><li class="on">Tue</li><li>Wed</li><li class="on">Thu</li><li class="on">Fri</li><li>Sat</li><li>Sun</li></ul>
+        <p>Each bar this page plays fills a day.</p></div>
+      <div><h3>A visitor</h3><p>A stick man drops by your library now and then and walks along the rows. Some days he brings the dog.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="fine" class="bgp">
+  <div class="fine">
+    <div class="mark">Fine</div>
+    <h2>One, two, ready, go.</h2>
+    <div class="stores">
+      <span class="store">App Store<small>coming soon</small></span>
+      <span class="store">Google Play<small>coming soon</small></span>
+    </div>
+    <p class="facts"><span>No sign-up.</span><span>No ads.</span><span>No analytics.</span><span>Pay once.</span></p>
+    <p>Sync is optional. It uses the iCloud or Google account you already have.</p>
+  </div>
+</section>
+
+<footer>
+  <span>Segno: Fun Score Reader</span>
+  <a class="legal" href="manual/">Help</a>
+  <a class="legal" href="privacy/">Privacy policy</a>
+  <button class="btn ds" id="ds"><svg viewBox="0 0 42 52" aria-hidden="true"><path d="M31 11C14 2 4 22 21 27s7 25-10 15" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="M35 5 7 47" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><circle cx="7" cy="22" r="3.6" fill="currentColor"/><circle cx="35" cy="32" r="3.6" fill="currentColor"/></svg>D.S. al Fine: back to the sign</button>
+</footer>
+</div>
+
+<div class="bar" role="group" aria-label="Metronome">
+  <div class="beats" id="beats" aria-hidden="true"></div>
+  <div class="ctl">
+    <button id="go" aria-pressed="false">Sound: off</button>
+    <div class="bpm"><button id="dn" aria-label="Slower">−</button><output id="bpmo" aria-label="Beats per minute">108</output><button id="up" aria-label="Faster">+</button></div>
+    <button id="tap">Tap</button>
+    <button id="pause">Pause</button>
+    <span class="info" id="info">Backbeat · 108 BPM</span>
+  </div>
+</div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const OUT='cubic-bezier(.23,1,.32,1)', INOUT='cubic-bezier(.77,0,.175,1)';
+const INK='#201C16', PAPER='#F7F1E4';
+
+/* ---------- palettes ---------- */
+const PALS=[['Editorial','2F5D4E','E0A93A','D98A94','E0603F'],['Citrus','1B5E6B','F5D033','F0507A','F2762E'],['Bright Pop','2A4BD7','8FC93A','D1307A','FF8A3D'],['Graphite','2B2A28','D6D1C6','9C9890','55524C'],['Arcade','7B2CFF','00E0BE','FF2E93','C8FF1F'],['Memphis','00A99B','FF78B9','FFD43B','6A3BDB'],['Bauhaus','D32A24','F7C600','0B4FA8','141414'],['Lagoon','0A5A78','6FD0E3','177A6B','F29E5C']];
+const on=h=>{const n=parseInt(h,16),f=v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)},L=.2126*f(n>>16)+.7152*f(n>>8&255)+.0722*f(n&255);return (L+.05)/.062>.93/(L+.05)?INK:PAPER};
+function setPal(i){
+  const p=PALS[i], r=document.documentElement.style;
+  ['p','s','t','a'].forEach((k,j)=>{r.setProperty('--'+k,'#'+p[j+1]);r.setProperty('--o'+k,on(p[j+1]))});
+  $$('.pal').forEach((b,j)=>b.setAttribute('aria-pressed',j===i));
+  try{localStorage.setItem('segno-pal',i)}catch(e){}
+}
+PALS.forEach((p,i)=>{
+  const b=document.createElement('button');b.className='pal';b.id='pal'+i;
+  b.innerHTML='<i>'+p.slice(1).map(c=>'<u style="background:#'+c+'"></u>').join('')+'</i>'+p[0];
+  b.onclick=()=>{setPal(i);blip(520+i*60)};$('#pals').append(b);
+});
+let saved=1;try{const v=localStorage.getItem('segno-pal');if(v!==null&&PALS[+v])saved=+v}catch(e){}
+setPal(saved);
+$('#bgs').innerHTML='Paper,Sepia,Void,Grape,Royal,Aqua,Score Lines,Polka,Comic,Waves,Stripes,Checkers,Starburst,Bullseye,Confetti,Spin,Ripples,Confetti Fall,Colour Shift,Rolling Staff,Marching Dots'.split(',').map(n=>'<li>'+n+'</li>').join('');
+
+/* ---------- audio ---------- */
+let ctx=null, master=null, noise=null, sound=false;
+function audio(){
+  if(ctx)return ctx;
+  // iPhone's silent switch mutes web audio unless the page asks for a playback session.
+  try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}
+  try{
+    ctx=new (window.AudioContext||window.webkitAudioContext)();
+    master=ctx.createGain();master.gain.value=sound?.8:0;master.connect(ctx.destination);
+    noise=ctx.createBuffer(1,ctx.sampleRate*.3,ctx.sampleRate);
+    const d=noise.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+  }catch(e){ctx=null}
+  return ctx;
+}
+const live=()=>!!ctx&&ctx.state==='running';
+const now=()=>live()?ctx.currentTime:performance.now()/1000;
+function tone(t,type,f0,f1,dur,vol){
+  const o=ctx.createOscillator(),g=ctx.createGain();
+  o.type=type;o.frequency.setValueAtTime(f0,t);if(f1)o.frequency.exponentialRampToValueAtTime(f1,t+dur);
+  g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);
+  o.connect(g).connect(master);o.start(t);o.stop(t+dur+.02);
+}
+function hiss(t,freq,dur,vol){
+  const s=ctx.createBufferSource(),f=ctx.createBiquadFilter(),g=ctx.createGain();
+  s.buffer=noise;f.type='highpass';f.frequency.value=freq;
+  g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);
+  s.connect(f).connect(g).connect(master);s.start(t);s.stop(t+dur+.02);
+}
+const kick=t=>tone(t,'sine',150,45,.14,.9), snare=t=>{hiss(t,1500,.12,.5);tone(t,'triangle',190,120,.08,.4)}, hat=t=>hiss(t,7000,.035,.22);
+const click=(t,acc,syn)=>syn?tone(t,'square',acc?880:660,0,.06,.16):tone(t,'triangle',acc?1500:1100,0,.05,.5);
+function blip(f){if(live()&&sound)tone(ctx.currentTime,'triangle',f,0,.07,.25)}
+
+/* ---------- metronome: a drum groove or a plain click, never both ---------- */
+const R=n=>[...Array(n).keys()];
+const G=[
+ {n:'Backbeat',b:4,d:2,k:[0,4],s:[2,6],h:R(8)},
+ {n:'Funk',b:4,d:4,k:[0,3,6,10],s:[4,12],h:[0,2,4,6,8,10,12,14]},
+ {n:'Four on the floor',b:4,d:2,k:[0,2,4,6],s:[2,6],h:[1,3,5,7]},
+ {n:'Bossa',b:4,d:2,k:[0,3,4,7],s:[0,3,6],h:R(8)},
+ {n:'March',b:4,d:2,k:[0,4],s:[2,3,6,7],h:[]},
+ {n:'6/8',b:2,d:3,k:[0],s:[3],h:R(6)},
+ {n:'Waltz',b:3,d:1,k:[0],s:[],h:[1,2]},
+ {n:'Jazz waltz',b:3,d:3,k:[0],s:[5],h:[0,3,5,6,8]},
+ {n:'Woodblock',b:4,d:1,c:1},
+ {n:'Synth click',b:4,d:1,c:2}
+];
+let gi=0, bpm=108, running=false, step=0, nextT=0, timer=0, bars=0, beatN=0, userStyle=false, clk=false;
+const beatsEl=$('#beats');
+function drawBeats(){beatsEl.innerHTML='<i></i>'.repeat(G[gi].b)}
+function info(){$('#bpmo').textContent=bpm;$('#info').textContent=G[gi].n+' · '+bpm+' BPM'+(bars?' · bar '+bars:'')}
+G.forEach((g,i)=>{
+  const b=document.createElement('button');b.className='chip';b.textContent=g.n;b.setAttribute('aria-pressed',i===0);
+  b.onclick=()=>{gi=i;step=0;$$('#grooves .chip,#click .chip').forEach((c,j)=>c.setAttribute('aria-pressed',j===i));drawBeats();info();setSound(true);if(!running)run()};
+  $(g.c?'#click':'#grooves').append(b);
+});
+drawBeats();
+function tick(){
+  const g=G[gi], c=live();
+  if(c!==clk||nextT<now()-.5){clk=c;nextT=now()+.05}
+  while(nextT<now()+.1){
+    const t=nextT, s=step;
+    if(c){ if(g.c)click(t,s===0,g.c===2); else { if(g.k.includes(s))kick(t); if(g.s.includes(s))snare(t); if(g.h.includes(s))hat(t); } }
+    if(s%g.d===0){const b=s/g.d;setTimeout(()=>onBeat(b),Math.max(0,(t-now())*1000))}
+    nextT+=60/bpm/g.d; step=(s+1)%(g.b*g.d);
+  }
+}
+function run(){running=true;nextT=now()+.06;clearInterval(timer);timer=setInterval(tick,25);$('#pause').textContent='Pause'}
+function halt(){running=false;clearInterval(timer);$('#pause').textContent='Go';$$('#beats i').forEach(i=>i.classList.remove('on'))}
+// Older iPhones (and pages inside a frame) ignore audioSession. A silent looping <audio>
+// started from the tap moves the page to the "playback" channel, which the silent switch doesn't mute.
+let silentLoop=null;
+function unmute(on){
+  try{
+    if(!silentLoop){
+      if(!on)return;
+      const sr=8000,n=sr/2,b=new ArrayBuffer(44+n*2),d=new DataView(b);
+      const w=(o,s)=>{for(let i=0;i<s.length;i++)d.setUint8(o+i,s.charCodeAt(i))};
+      w(0,'RIFF');d.setUint32(4,36+n*2,true);w(8,'WAVE');w(12,'fmt ');d.setUint32(16,16,true);
+      d.setUint16(20,1,true);d.setUint16(22,1,true);d.setUint32(24,sr,true);d.setUint32(28,sr*2,true);
+      d.setUint16(32,2,true);d.setUint16(34,16,true);w(36,'data');d.setUint32(40,n*2,true);
+      silentLoop=new Audio(URL.createObjectURL(new Blob([b],{type:'audio/wav'})));
+      silentLoop.loop=true;silentLoop.setAttribute('playsinline','');
+    }
+    if(on)silentLoop.play().catch(()=>{});else silentLoop.pause();
+  }catch(e){}
+}
+function setSound(v){
+  sound=v; unmute(v); if(v){audio();if(ctx&&ctx.state==='suspended')ctx.resume()}
+  if(master)master.gain.value=v?.8:0;
+  $('#go').textContent=v?'Sound: on':'Sound: off';$('#go').setAttribute('aria-pressed',v);
+}
+$('#go').onclick=()=>{setSound(!sound);if(sound&&!running)run()};
+$('#pause').onclick=()=>running?halt():run();
+document.addEventListener('visibilitychange',()=>{if(document.hidden){clearInterval(timer);hush()}else if(running)run()});
+function setBpm(v){bpm=Math.min(220,Math.max(40,Math.round(v)));info()}
+$('#dn').onclick=()=>setBpm(bpm-4); $('#up').onclick=()=>setBpm(bpm+4);
+let taps=[];
+$('#tap').onclick=()=>{
+  const t=performance.now(); if(taps.length&&t-taps[taps.length-1]>2000)taps=[];
+  taps.push(t); if(taps.length>5)taps.shift();
+  if(live()&&sound)click(ctx.currentTime,false,G[gi].c===2);
+  if(taps.length>1)setBpm(60000*(taps.length-1)/(t-taps[0]));
+};
+
+/* ---------- what moves on the beat ---------- */
+const letters=$$('.logo span'), marks=$$('.tick');
+function onBeat(b){
+  if(!running)return;
+  $$('#beats i').forEach((el,i)=>el.classList.toggle('on',i===b));
+  const L=letters[beatN%5];L.classList.add('hit');setTimeout(()=>L.classList.remove('hit'),150);
+  if(!RM)marks.forEach(m=>m.animate([{transform:'scale(1.09)'},{transform:'none'}],{duration:180,easing:OUT}));
+  setStep(beatN%4+1);
+  beatN++;
+  if(b===0){bars++;info();const d=(bars-1)%7;$$('#week li').forEach((l,i)=>l.classList.toggle('on',i<=d));if(bars>1){trigger();rdStep()}}
+}
+letters.forEach((l,i)=>l.addEventListener('pointerdown',()=>{l.classList.add('hit');setTimeout(()=>l.classList.remove('hit'),150);blip([392,440,494,587,659][i])}));
+
+/* A: photo to practice */
+const lns=$$('#sheet .ln'), stepLis=$$('#steps li');
+function setStep(n){
+  stepLis.forEach((li,i)=>li.classList.toggle('on',i===n-1));
+  lns.forEach((l,i)=>{
+    l.classList.toggle('found',true);
+    l.classList.toggle('sel',(n===2&&i===1)||(n>=3&&i>=1&&i<=3));
+    l.classList.toggle('dim',n===4&&(i<1||i>3));
+    if(n>=2&&i===1)l.dataset.tag='first';else if(n>=3&&i===3)l.dataset.tag='last';else delete l.dataset.tag;
+  });
+  if(n===1&&!RM)$('#sheet .flash').animate([{opacity:.9},{opacity:0}],{duration:260,easing:'ease-out'});
+}
+
+/* hero reader: positions in lines.jpg pixels (1400 x 1130, line k = 113k..113k+113, its staff
+   31..81 below that). Sizes in app points scaled from an 852 pt wide phone held sideways. */
+const LH=113, ST=[31,81], rdc=$('#rdc'), rdw=$('#rdw'), mk=$('#mk'), fdT=$('#fdT'), fdB=$('#fdB'), rdcap=$('#rdcap');
+const ZS=3.15, STOPS=[0,478,956];   // a stop is one screen along; the last two evened out, the last flush right
+const GROUPS=[[0,1,2],[3,4,5],[6,7,8]];
+const RD=[{g:0},{g:1},{k:3,x:0},{k:3,x:1},{k:3,x:2},{k:4,x:0},{k:4,x:1},{k:4,x:2}];
+let rdN=0;
+function rdShow(){
+  const r=RD[rdN], rd=rdc.parentNode, W=rd.clientWidth, H=rd.clientHeight, pt=W/852, gut=(50+26)*pt, trail=26*pt;   // PagePhotoLayout: the Island side keeps 50 + 26 pt, the other 26 pt
+  const z=r.k!=null, s=(W-gut-trail)/1400*(z?ZS:1), vh=H/s;
+  let x0=0,y0,a,b;
+  if(z){x0=STOPS[r.x];y0=LH*r.k+LH/2-vh/2;a=r.k;b=r.k}
+  else{const m=GROUPS[r.g];a=m[0];b=m[m.length-1];const t=LH*a,h=LH*(b-a+1);y0=t-Math.max(0,vh-h)*.4}
+  rdc.style.left=gut+'px';rdc.style.right=(z?0:trail)+'px';
+  // a close-up turn is the app's 0.6 s ease-in-out; page-view turns and the zoom in/out its 0.7 s curve
+  const prevZ=RD[(rdN+RD.length-1)%RD.length].k!=null;
+  rdw.style.transition=mk.style.transition=RM?'none':(z&&prevZ?'transform .6s ease-in-out,top .6s ease-in-out,height .6s ease-in-out':'');
+  rdw.style.transform='translate('+(-x0*s)+'px,'+(-y0*s)+'px) scale('+s+')';
+  fdT.style.top='0';fdT.style.height=LH*a+'px';fdB.style.top=LH*(b+1)+'px';fdB.style.height=(1130-LH*(b+1))+'px';
+  fdT.style.opacity=fdB.style.opacity=z?1:0;
+  mk.style.left=(gut-13*pt)+'px';mk.style.width=Math.max(2,4*pt)+'px';
+  mk.style.top=(ST[0]+LH*a-y0)*s+'px';mk.style.height=Math.max(12*pt,(ST[1]-ST[0]+LH*(b-a))*s)+'px';
+  rdcap.textContent=z?'Zoomed in to one line. A nod or tap moves one screen along it, then to the next line.':'Up to three lines, marked in the margin. A nod or tap moves on to the next three.';
+}
+function rdStep(){rdN=(rdN+1)%RD.length;rdShow()}
+rdShow(); addEventListener('resize',()=>{rdw.style.transition=mk.style.transition='none';rdShow();rdw.offsetWidth;rdw.style.transition=mk.style.transition=''});
+/* B: nod and turn */
+const STY=['Glide','Page turn','Card flip','Colour wipe','Gravity drop','Deal','Slats'];
+const NOTES=['A small chin-lift turns the page. Works on iPhone, iPad and Android.','Tap the music to move on.','Say “next” or “back”. Works on iPhone and iPad.'];
+let si=0, mode=0, page=1, busy=false;
+const cur=$('#cur'), nxt=$('#nxt'), wipe=$('#wipe'), slats=$$('#slats i');
+STY.forEach((n,i)=>{
+  const b=document.createElement('button');b.className='chip';b.textContent=n;b.setAttribute('aria-pressed',i===0);
+  b.onclick=()=>{userStyle=true;pick(i);trigger()};$('#styles').append(b);
+});
+function pick(i){si=i;$('#sname').textContent=STY[i];$$('#styles .chip').forEach((c,j)=>c.setAttribute('aria-pressed',j===i))}
+$$('#trig .chip').forEach((c,i)=>{ if(i>2)return; c.onclick=()=>{mode=i;$$('#trig .chip').forEach((x,j)=>{if(j<3)x.setAttribute('aria-pressed',j===i)});$('#tnote').textContent=NOTES[i];trigger()} });
+$('#gl').onclick=e=>{const v=e.currentTarget.getAttribute('aria-pressed')!=='true';e.currentTarget.setAttribute('aria-pressed',v);$('#specs').style.display=v?'':'none'};
+$('#who').onclick=()=>{trigger();rdStep()};
+function trigger(){
+  if(busy)return;
+  if(mode===0&&!RM)$('#face').animate([{transform:'none'},{transform:'translateY(-10px)',offset:.4},{transform:'none'}],{duration:440,easing:INOUT});
+  if(mode===1&&!RM)$('#pg').animate([{transform:'scale(.96)'},{transform:'none'}],{duration:220,easing:'ease-out'});
+  if(mode===2)$('#bubble').animate([{opacity:0,transform:'scale(.9)'},{opacity:1,transform:'none',offset:.2},{opacity:1,transform:'none',offset:.8},{opacity:0,transform:'none'}],{duration:700,easing:'ease-out'});
+  setTimeout(turn,RM?0:170);
+}
+function turn(){
+  if(busy)return; busy=true;
+  nxt.lastElementChild.textContent=page+1;
+  let D=520, swapAt=D;
+  const A=(el,kf,o)=>el.animate(kf,Object.assign({duration:D,easing:INOUT,fill:'both'},o));
+  if(RM){D=0;swapAt=0}
+  else switch(si){
+    case 0: nxt.style.zIndex=3; A(nxt,[{transform:'translateX(100%)'},{transform:'none'}]); A(cur,[{transform:'none'},{transform:'translateX(-30%)'}]); break;
+    case 1: cur.style.transformOrigin='0 50%'; A(cur,[{transform:'none'},{transform:'rotateY(-105deg)'}]); break;
+    case 2: A(cur,[{transform:'none'},{transform:'rotateY(90deg)'}],{duration:D/2,easing:'ease-in'}); A(nxt,[{transform:'rotateY(-90deg)'},{transform:'none'}],{duration:D/2,delay:D/2,easing:OUT}); break;
+    case 3: D=560; swapAt=D/2; wipe.animate([{transform:'translateX(-101%)'},{transform:'none',offset:.45},{transform:'none',offset:.55},{transform:'translateX(101%)'}],{duration:D,easing:INOUT}); break;
+    case 4: cur.style.transformOrigin='0 0'; A(cur,[{transform:'none'},{transform:'translateY(130%) rotate(14deg)'}],{easing:'cubic-bezier(.5,0,.9,.4)'}); break;
+    case 5: nxt.style.zIndex=3; A(nxt,[{transform:'translate(120%,-60%) rotate(28deg)'},{transform:'none'}],{easing:OUT}); break;
+    case 6: D=600; swapAt=336; slats.forEach((s,i)=>s.animate([{transform:'scaleY(0)'},{transform:'scaleY(1)',offset:.4},{transform:'scaleY(1)',offset:.6},{transform:'scaleY(0)'}],{duration:D,delay:i*15,easing:INOUT})); break;
+  }
+  setTimeout(()=>{
+    page++; if(page>98)page=1;
+    cur.lastElementChild.textContent=page;
+    [cur,nxt].forEach(el=>{el.getAnimations().forEach(a=>a.cancel());el.style.zIndex='';el.style.transformOrigin=''});
+  },swapAt);
+  setTimeout(()=>{busy=false; if(running&&!userStyle)pick((si+1)%STY.length)},D+40);
+}
+
+/* C: tuner and takes */
+/* The tuner's singer: a port of TunerFigures.swift (drawing, poses, easing, particles) and of
+   TunerSound.swift's singer voice. The app reacts at 10/20/30 s; this page at 5/10/15 s (PH). */
+const hush=(()=>{   // own scope: INK, cur and others are taken above
+const PH=5;
+const hz=$('#hz'), singer=$('#singer'), singBtn=$('#sing'), sg=singer.getContext('2d');
+const INK='#201C16', CREAM='#FBF5E8';
+const PO={
+  idle:{la1:105,la2:95,ra1:75,ra2:85,drop:0,lean:0,chest:0,puff:0,flush:0,mouthW:12,mouthH:0,brow:0,sweat:0,shake:0,eyes:'open'},
+  sing:{la1:125,la2:-45,ra1:-20,ra2:-35,drop:0,lean:0,chest:8,puff:0,flush:0,mouthW:16,mouthH:22,brow:0,sweat:0,shake:0,eyes:'happy'},
+  r10:{la1:120,la2:-10,ra1:-25,ra2:-55,drop:0,lean:-3,chest:5,puff:.35,flush:.18,mouthW:14,mouthH:16,brow:1,sweat:1,shake:.3,eyes:'open'},
+  r20:{la1:120,la2:-10,ra1:60,ra2:190,drop:14,lean:4,chest:2,puff:1,flush:.6,mouthW:9,mouthH:9,brow:0,sweat:2,shake:1,eyes:'squeeze'},
+  r30:{la1:98,la2:92,ra1:82,ra2:88,drop:62,lean:9,chest:-4,puff:.5,flush:1,mouthW:12,mouthH:6,brow:0,sweat:3,shake:2.2,eyes:'cross'}
+};
+const cur=Object.assign({},PO.idle);
+let started=null, lastNow=null, notes=[], drops=[], lastNote=0, lastDrop=0, sgOn=false;
+const target=t=>t==null?PO.idle:t<PH?PO.sing:t<2*PH?PO.r10:t<3*PH?PO.r20:PO.r30;
+function sgStep(now,t){
+  const dt=lastNow==null?1/60:Math.min(.05,Math.max(0,now-lastNow));lastNow=now;
+  const k=1-Math.exp(-dt*7), tg=target(t);
+  for(const key in tg)if(key!=='eyes')cur[key]+=(tg[key]-cur[key])*k;
+  cur.eyes=tg.eyes;
+  notes.forEach(n=>{n.life+=dt;n.x+=n.vx*dt;n.y+=n.vy*dt});notes=notes.filter(n=>n.life<2.6);
+  drops.forEach(d=>{d.life+=dt;d.vy+=180*dt;d.x+=d.vx*dt;d.y+=d.vy*dt});drops=drops.filter(d=>d.life<1.4);
+  const playing=t!=null;
+  if(playing&&now-lastNote>.75){lastNote=now;notes.push({x:240,y:200+cur.drop*.8,vx:28+Math.random()*16,vy:-30-Math.random()*12,life:0})}
+  if(playing&&cur.sweat>.5&&now-lastDrop>1.6/cur.sweat){lastDrop=now;const d=Math.random()<.5?-1:1;
+    drops.push({x:200+d*(82+cur.puff*10),y:130+cur.drop*1.35,vx:d*(10+cur.shake*12),vy:-20,life:0})}
+}
+const ln=(pts,c,w)=>{sg.beginPath();pts.forEach((q,i)=>i?sg.lineTo(q[0],q[1]):sg.moveTo(q[0],q[1]));sg.strokeStyle=c;sg.lineWidth=w;sg.lineCap=sg.lineJoin='round';sg.stroke()};
+const arcLn=(cx,cy,r,a0,a1,c,w)=>{sg.beginPath();sg.arc(cx,cy,r,a0,a1,false);sg.strokeStyle=c;sg.lineWidth=w;sg.lineCap='round';sg.stroke()};
+const dot=(x,y,r,c)=>{sg.beginPath();sg.arc(x,y,r,0,7);sg.fillStyle=c;sg.fill()};
+const ell=(x,y,rx,ry,c,rot=0)=>{sg.beginPath();sg.ellipse(x,y,rx,ry,rot,0,7);sg.fillStyle=c;sg.fill()};
+function sgDraw(T,t){
+  const W=singer.width;sg.setTransform(W/400,0,0,W/400,0,0);
+  sg.fillStyle='#2BA89A';sg.fillRect(0,0,400,400);
+  sg.fillStyle='rgba(255,255,255,.13)';
+  for(let y=10;y<400;y+=22)for(let x=((y/22)%2)*11+6;x<400;x+=22){sg.beginPath();sg.arc(x,y,3.2,0,7);sg.fill()}
+  const playing=t!=null; t=t||0;
+  const s=RM?0:cur.shake, sx=s*Math.sin(T*47), sy=s*.6*Math.cos(T*41);
+  const sway=playing&&t<PH&&!RM?Math.sin(T*2.2)*3:0;
+  sg.save();
+  sg.translate(200,370);sg.scale(1.35,1.35);sg.translate(-200,-370);
+  sg.translate(200+sx,470+sy);sg.rotate((cur.lean+sway)*Math.PI/180);sg.translate(-200,-470);
+  sg.translate(0,cur.drop);
+  const neckY=292-cur.chest, shY=neckY+10;
+  ln([[200,520],[200,neckY]],INK,26);
+  const f=cur.flush, ch=(a,b)=>Math.round(a+(b-a)*f);
+  const hx=200+(cur.drop>30?6:0), hy=neckY-64, rx=52*(1+.16*cur.puff);
+  ell(hx,hy,rx,52,'rgb('+ch(32,204)+','+ch(28,48)+','+ch(22,40)+')');
+  const sw=playing&&t<PH&&!RM?Math.sin(T*2.2)*6:0, r=Math.PI/180;
+  for(const [a1,a2] of [[cur.la1-sw,cur.la2-sw],[cur.ra1+sw,cur.ra2+sw]]){
+    const ex=200+80*Math.cos(a1*r), ey=shY+80*Math.sin(a1*r);
+    ln([[200,shY],[ex,ey],[ex+74*Math.cos(a2*r),ey+74*Math.sin(a2*r)]],INK,26);
+  }
+  const blink=!playing&&(T%4)<.12;
+  for(const d of [-1,1]){
+    const ex=hx+d*18*(1+.1*cur.puff), ey=hy-8;
+    if(cur.eyes==='happy')arcLn(ex,ey+3,8,Math.PI*1.1,Math.PI*1.9,CREAM,5);
+    else if(cur.eyes==='squeeze')ln([[ex-8,ey],[ex+8,ey+(d<0?2:-2)]],CREAM,5);
+    else if(cur.eyes==='cross')ln([[ex-7*d,ey-6],[ex+5*d,ey],[ex-7*d,ey+6]],CREAM,5);
+    else if(blink)ln([[ex-6,ey],[ex+6,ey]],CREAM,5);
+    else dot(ex,ey,5.5,CREAM);
+    if(cur.brow>.05){sg.globalAlpha=cur.brow;ln([[ex-9,ey-17],[ex+9,ey-20+(d<0?2:-2)]],CREAM,5);sg.globalAlpha=1}
+    if(cur.puff>.05){sg.globalAlpha=Math.min(1,cur.puff);dot(hx+d*34*(1+.12*cur.puff),hy+12,10+5*cur.puff,'rgba(240,106,140,.9)');sg.globalAlpha=1}
+  }
+  const my=hy+20;
+  if(cur.mouthH<1.5)arcLn(hx,my-6,cur.mouthW,Math.PI*.2,Math.PI*.8,CREAM,5);
+  else if(cur.eyes==='cross'){const p=[];for(let i=0;i<=8;i++)p.push([hx-12+i*3,my+(i%2?3:-3)]);ln(p,CREAM,5)}
+  else ell(hx,my,cur.mouthW,cur.mouthH,CREAM);
+  if(cur.eyes==='cross'){const o=(Math.floor(T*6)%2)*4;
+    for(const d of [-1,1])arcLn(hx+d*(rx+16+o),hy,16,d<0?Math.PI*.75:-Math.PI*.25,d<0?Math.PI*1.25:Math.PI*.25,INK,5)}
+  sg.restore();
+  for(const n of notes){
+    sg.globalAlpha=Math.max(0,Math.min(1,(2.6-n.life)*1.5));
+    const wob=cur.eyes==='cross'?Math.sin(T*12+n.x)*3:0;
+    ell(n.x+wob,n.y,9,6.5,CREAM,-.35);sg.fillRect(n.x+wob+6,n.y-26,3.5,24);
+  }
+  sg.globalAlpha=1;sg.fillStyle='#9FD8F5';
+  for(const d of drops){sg.beginPath();sg.moveTo(d.x,d.y-12);sg.quadraticCurveTo(d.x+8,d.y,d.x,d.y+6);sg.quadraticCurveTo(d.x-8,d.y,d.x,d.y-12);sg.fill()}
+}
+let sgVis=true, sgRaf=0;
+function sgFrame(ms){
+  sgRaf=0; const now=ms/1000;
+  if(!sgVis)return;
+  if(sgLast==null||now-sgLast>=1/61){sgLast=now;const t=started==null?null:now-started;sgStep(now,t);sgDraw(now,t)}
+  sgRaf=requestAnimationFrame(sgFrame);
+}
+let sgLast=null;
+new IntersectionObserver(e=>{sgVis=e[0].isIntersecting;if(sgVis&&!sgRaf){lastNow=null;sgRaf=requestAnimationFrame(sgFrame)}}).observe(singer);
+
+/* The voice: Rosenberg glottal pulse (its slope as the source), breath noise, five formant
+   resonators for a female "ah". Gain .22, .12 s linear attack, 50 ms release, 20 ms pitch glide. */
+let node=null, vp={on:false,hz:440};
+function reson(f,bw,sr){const c=-Math.exp(-2*Math.PI*bw/sr), b=2*Math.exp(-Math.PI*bw/sr)*Math.cos(2*Math.PI*f/sr);return{g:1-b-c,b,c,y1:0,y2:0}}
+const run=(q,x)=>{const y=q.g*x+q.b*q.y1+q.c*q.y2;q.y2=q.y1;q.y1=y;return y};
+function voiceNode(){
+  const sr=ctx.sampleRate, F=[[820,80],[1180,90],[2850,120],[3900,140],[4950,180]].map(([f,bw])=>reson(f,bw,sr));
+  const n=ctx.createScriptProcessor(1024,0,1);
+  let phase=0, curHz=vp.hz, level=0, gPrev=0, nPrev=0;
+  const attackStep=1/(.12*sr), releaseK=Math.exp(-1/(.05*sr)), hzK=1-Math.exp(-1/(.02*sr)), open=.42, close=.16;
+  n.onaudioprocess=e=>{
+    const out=e.outputBuffer.getChannelData(0);
+    for(let i=0;i<out.length;i++){
+      curHz+=(vp.hz-curHz)*hzK;
+      level=vp.on?Math.min(1,level+attackStep):level*releaseK;
+      phase+=curHz/sr; if(phase>=1)phase-=1;
+      const g=phase<open?.5*(1-Math.cos(Math.PI*phase/open)):phase<open+close?Math.cos(.5*Math.PI*(phase-open)/close):0;
+      const src=(g-gPrev)*sr/440/6; gPrev=g;
+      const noise=Math.random()*2-1, breath=(noise-.9*nPrev)*.06*(phase<open+close?1:.3); nPrev=noise;
+      let s=src+breath; for(const q of F)s=run(q,s);
+      out[i]=s*.0489*.22*level;
+    }
+  };
+  n.connect(ctx.destination);
+  return n;
+}
+hz.oninput=()=>{$('#hzo').textContent=hz.value+' Hz';vp.hz=+hz.value};
+function sing(){
+  started=performance.now()/1000;notes=[];drops=[];
+  singBtn.textContent='Stop';singBtn.setAttribute('aria-pressed',true);
+  if(!audio())return; if(ctx.state==='suspended')ctx.resume();
+  vp.hz=+hz.value;vp.on=true;
+  if(!node)node=voiceNode();
+}
+function hush(){
+  if(started==null)return;
+  started=null;vp.on=false;
+  singBtn.textContent='Sing an A';singBtn.setAttribute('aria-pressed',false);
+  const n=node;node=null;if(n)setTimeout(()=>{if(!vp.on||node!==n)n.disconnect()},500);
+}
+singBtn.onclick=singer.onclick=()=>started!=null?hush():sing();
+return hush;
+})();
+$$('#takes button').forEach(b=>b.onclick=()=>{const v=b.getAttribute('aria-pressed')==='true';$$('#takes button').forEach(x=>x.setAttribute('aria-pressed',false));b.setAttribute('aria-pressed',!v);blip(880)});
+
+/* footer: dal segno */
+$('#ds').onclick=()=>{$('#top').scrollIntoView({behavior:RM?'auto':'smooth'})};
+info();
+if(RM)$('#pause').textContent='Go';else run();
+})();
+</script>
+<script>
+// Stick man visitor (port of LibraryVisitor.swift)
+// One stick man on a fixed canvas. He stands on the top edges of cards that have clear space above
+// them (nothing but empty page for 1.6 H up), does an errand, and leaves. Debug: ?visitor=always,
+// or ?visitor=<play|conduct|sit|juggle|read|nap|walkDog> to force an errand.
+(function(){
+'use strict';
+const qs=new URLSearchParams(location.search), DBG=qs.get('visitor')||'';
+const ERR=['play','conduct','sit','juggle','read','nap','walkDog'];
+const FORCED=ERR.includes(DBG)?DBG:null, ALWAYS=DBG==='always'||DBG==='sign'||!!FORCED;
+const PI=Math.PI, clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+const rnd=(a,b)=>a+Math.random()*(b-a), pick=a=>a[Math.floor(Math.random()*a.length)];
+const SEL='.panel,.steps,.tool,.blk,.store,.fine';   // .logo tiles left out: they bounce on the beat, which would carry him over the pill above
+const rmq=matchMedia('(prefers-reduced-motion: reduce)');
+const dbg={spawns:0,log:[],err:[]};
+if(DBG){window.__visitor=dbg;dbg.scanNow=()=>{scan();return 1};dbg.fig=()=>fig&&{x:fig.x,y:fig.y,mode:fig.mode,taps:fig.taps,react:fig.react&&fig.react.kind};addEventListener('error',e=>{dbg.err.push(String(e.message));document.documentElement.dataset.verr=dbg.err.join('|')})}
+
+let H=18,W=0,VH=0,dpr=1,walkV,runV,walkStride,runStride,lineW,barTop=0;
+function setGeo(){
+  W=document.documentElement.clientWidth;VH=innerHeight;dpr=Math.min(3,window.devicePixelRatio||1);
+  H=W>=900?22:18;walkV=1.45*H;runV=4.6*H;walkStride=.9*H;runStride=1.7*H;lineW=Math.max(1.3,.13*H);
+  const b=document.querySelector('.bar');barTop=b?b.getBoundingClientRect().top:VH;
+}
+let ink='#201C16',pal={p:'#1B5E6B',s:'#F5D033',t:'#F0507A',a:'#F2762E'};
+function readColours(){
+  const cs=getComputedStyle(document.documentElement),g=n=>cs.getPropertyValue(n).trim();
+  ink=g('--line')||'#201C16';cardCol=g('--card')||'#FFFDF6';pal={p:g('--p')||pal.p,s:g('--s')||pal.s,t:g('--t')||pal.t,a:g('--a')||pal.a};
+}
+const WOOD='#A8541F',COLLAR='#E33840';
+
+/* ---------- poses ---------- */
+const P=(lt,ls,rt,rs,la,lf,ra,rf)=>({lt,ls,rt,rs,la,lf,ra,rf});
+const mixP=(a,b,t)=>{const u=clamp(t,0,1),o={};for(const k in a)o[k]=a[k]+(b[k]-a[k])*u;return o};
+const STAND=P(.06,0,-.06,0,.12,.22,-.1,.02), CROUCH=P(1.05,-.45,.95,-.5,-.7,-.4,-.6,-.3);
+const TUCK=P(2.1,.3,2.0,.2,1.3,2.0,1.1,1.8);
+const STAR=P(.55,.55,-.55,-.55,PI-.75,PI-.75,-(PI-.75),-(PI-.75));
+function walkPose(p){
+  const leg=q=>{const th=.5*Math.sin(q);return[th,th-.9*Math.max(0,Math.cos(q))]};
+  const[lt,ls]=leg(p),[rt,rs]=leg(p+PI),arm=-.75*Math.sin(p);
+  return P(lt,ls,rt,rs,arm,arm+.3+.35*Math.max(0,-arm),-arm,-arm+.3+.35*Math.max(0,arm));
+}
+function runPose(p){
+  const leg=q=>{const th=.85*Math.sin(q)+.15;return[th,th-1.6*Math.max(0,Math.cos(q))-.15]};
+  const[lt,ls]=leg(p),[rt,rs]=leg(p+PI),arm=-.85*Math.sin(p);
+  return P(lt,ls,rt,rs,arm,arm+1.5,-arm,-arm+1.5);
+}
+/* two-bone arm reaching (tx,ty); angles from straight down */
+function ik(base,tx,ty,l1,l2){
+  let dx=tx-base.x,dy=ty-base.y,d=Math.hypot(dx,dy);const reach=(l1+l2)*.999;
+  if(d>reach){dx*=reach/d;dy*=reach/d;d=reach}
+  const a=Math.atan2(dx,dy),inner=Math.acos(clamp((l1*l1+d*d-l2*l2)/(2*l1*d),-1,1));
+  const a1=a-inner,ex=base.x+l1*Math.sin(a1),ey=base.y+l1*Math.cos(a1);
+  return[a1,Math.atan2(base.x+dx-ex,base.y+dy-ey)];
+}
+const VIOLIN={ctr:{x:.14,y:-.315},tilt:-.1,contact:{x:.16,y:-.315},bow:{x:-.2,y:.98}};
+function violinPose(t){
+  const h=H,sh={x:0,y:-.27*h},A1=.18*h,A2=.17*h,st=Math.sin(t*2*PI/.95),k=.15+.07*st;
+  const[ra,rf]=ik(sh,(VIOLIN.contact.x+VIOLIN.bow.x*k)*h,(VIOLIN.contact.y+VIOLIN.bow.y*k)*h,A1,A2);
+  const[la,lf]=ik(sh,(.33+.006*Math.sin(t*31))*h,-.345*h,A1,A2);
+  return P(.28,.06,-.28,-.06,la,lf,ra,rf);
+}
+
+/* ---------- canvas ---------- */
+let cv=null,cx=null,joints=null,leadHand=null,ballAt=null;
+function ensureCanvas(){
+  if(!cv){
+    cv=document.createElement('canvas');cv.setAttribute('aria-hidden','true');
+    cv.style.cssText='position:fixed;left:0;top:0;pointer-events:none;z-index:18';
+    document.body.appendChild(cv);cx=cv.getContext('2d');
+  }
+  cv.style.display='block';sizeCanvas();
+}
+function sizeCanvas(){
+  cv.width=Math.round(W*dpr);cv.height=Math.round(VH*dpr);cv.style.width=W+'px';cv.style.height=VH+'px';
+}
+const world=pt=>{const m=cx.getTransform();return{x:(m.a*pt.x+m.c*pt.y+m.e)/dpr,y:(m.b*pt.x+m.d*pt.y+m.f)/dpr}};
+function circle(x,y,r,col){cx.fillStyle=col;cx.beginPath();cx.arc(x,y,r,0,2*PI);cx.fill()}
+function seg(a,b,col,w){cx.strokeStyle=col;cx.lineWidth=w;cx.lineCap='round';cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);cx.stroke()}
+
+/* The figure: hip at the origin, angles from straight down (+ = forward). */
+function figure(x,y,face,p,o){
+  o=o||{};
+  const h=H,L1=.245*h,L2=.235*h,A1=.18*h,A2=.17*h,sp=.3*h,hr=.115*h,bd=o.bend||0,cb=Math.cos(bd),sb=Math.sin(bd);
+  const at=(b,a,l)=>({x:b.x+l*Math.sin(a),y:b.y+l*Math.cos(a)});
+  const bent=q=>({x:q.x*cb-q.y*sb,y:q.x*sb+q.y*cb});
+  const hip={x:0,y:0},neck=bent({x:0,y:-sp}),sh=bent({x:0,y:-sp+.03*h});
+  const lk=at(hip,p.lt,L1),lfo=at(lk,p.ls,L2),rk=at(hip,p.rt,L1),rfo=at(rk,p.rs,L2);
+  const le=at(sh,p.la,A1),lh=at(le,p.lf,A2),re=at(sh,p.ra,A1),rh=at(re,p.rf,A2);
+  const hipY=o.hipY!==undefined?o.hipY:(o.grounded===false?-(L1+L2):-Math.max(lfo.y,rfo.y));
+  cx.save();cx.globalAlpha=o.alpha===undefined?1:o.alpha;
+  cx.translate(x,y-(o.lift||0));cx.scale(face,1);cx.translate(0,hipY);
+  if(o.rot){const cy=-.06*h;cx.translate(0,cy);cx.rotate(o.rot);cx.translate(0,-cy)}
+  cx.strokeStyle=ink;cx.fillStyle=ink;cx.lineWidth=lineW;cx.lineCap='round';cx.lineJoin='round';
+  cx.beginPath();cx.moveTo(lfo.x,lfo.y);cx.lineTo(lk.x,lk.y);cx.lineTo(0,0);cx.lineTo(rk.x,rk.y);cx.lineTo(rfo.x,rfo.y);
+  cx.moveTo(0,0);cx.lineTo(neck.x,neck.y);cx.stroke();
+  const hc=bent({x:.01*h,y:-sp-hr-.02*h});circle(hc.x,hc.y,hr,ink);
+  const armsPath=(pts)=>{cx.beginPath();pts.forEach(a=>{cx.moveTo(a[0].x,a[0].y);for(let i=1;i<a.length;i++)cx.lineTo(a[i].x,a[i].y)});cx.stroke()};
+  let bow=null;
+  if(o.prop==='violin'){
+    armsPath([[lh,le,sh]]);bow=violin(rh);
+    armsPath([[sh,re,rh]]);
+  }else{
+    const arms=[[lh,le,sh],[sh,re,rh]];
+    if(o.prop==='baton')arms.push([rh,{x:rh.x+Math.sin(p.rf)*.3*h,y:rh.y+Math.cos(p.rf)*.3*h}]);
+    armsPath(arms);
+  }
+  if(o.lead)leadHand={x:x+face*rh.x,y:y-(o.lift||0)+hipY+rh.y};
+  joints={hip:world(hip),lh:world(lh),rh:world(rh),head:world(hc)};
+  if(bow){cx.strokeStyle=ink;cx.lineWidth=Math.max(1,lineW*.5);cx.beginPath();cx.moveTo(bow[0].x,bow[0].y);cx.lineTo(bow[1].x,bow[1].y);cx.stroke()}
+  cx.restore();
+}
+function violin(rh){
+  const h=H,a=VIOLIN.tilt,c=VIOLIN.ctr,ax={x:Math.cos(a),y:Math.sin(a)};
+  const sc={x:(c.x+ax.x*.31)*h,y:(c.y+ax.y*.31)*h};
+  seg({x:(c.x+ax.x*.1)*h,y:(c.y+ax.y*.1)*h},sc,ink,lineW*.6);
+  for(const[w,l,off]of[[.05,.07,-.04],[.04,.055,.06]]){
+    cx.save();cx.translate((c.x+ax.x*off)*h,(c.y+ax.y*off)*h);cx.rotate(a);
+    cx.fillStyle=WOOD;cx.beginPath();cx.ellipse(0,0,l*h,w*h,0,0,2*PI);cx.fill();cx.restore();
+  }
+  circle(sc.x,sc.y,.03*h,WOOD);
+  const d=VIOLIN.bow;
+  return[{x:rh.x+d.x*.03*h,y:rh.y+d.y*.03*h},{x:rh.x-d.x*.42*h,y:rh.y-d.y*.42*h}];
+}
+
+/* dog: side-on, red collar and lead */
+function dogGlyph(d,hand){
+  const h=H,sn=d.sniff;
+  cx.save();cx.globalAlpha=Math.max(0,d.alpha);
+  const neckP={x:d.x+d.dir*.2*h,y:d.y-d.lift-(.27-.08*sn)*h};
+  cx.translate(d.x,d.y-d.lift);cx.scale(d.dir,1);
+  const pt=(x,y)=>({x:x*h,y:y*h}),hip=pt(-.2,-.22),sh=pt(.16,-.22+.03*sn),legL=.2*h,sw=.5*Math.sin(d.phase);
+  cx.strokeStyle=ink;cx.lineCap='round';cx.lineJoin='round';cx.lineWidth=lineW*.85;cx.beginPath();
+  for(const[top,a]of[[hip,sw],[hip,-sw],[sh,-sw],[sh,sw]]){cx.moveTo(top.x,top.y);cx.lineTo(top.x+legL*Math.sin(a),top.y+legL*Math.cos(a))}
+  cx.stroke();
+  const wag=.5*Math.sin(d.wag);
+  cx.beginPath();cx.moveTo(hip.x,hip.y);
+  cx.quadraticCurveTo(hip.x-.12*h,hip.y-.02*h,hip.x-.17*h*Math.cos(.9+wag),hip.y-.17*h*Math.sin(.9+wag));cx.stroke();
+  cx.lineWidth=lineW*1.7;cx.beginPath();cx.moveTo(hip.x,hip.y);cx.quadraticCurveTo((hip.x+sh.x)/2,hip.y-.03*h,sh.x,sh.y);cx.stroke();
+  const head=pt(.3,-.36+.24*sn);
+  cx.lineWidth=lineW*1.1;seg(sh,head,ink,lineW*1.1);
+  cx.fillStyle=ink;cx.beginPath();cx.ellipse(head.x,head.y,.1*h,.075*h,0,0,2*PI);cx.fill();
+  cx.beginPath();cx.ellipse(head.x+.095*h,head.y+.015*h,.065*h,.04*h,0,0,2*PI);cx.fill();
+  seg({x:head.x-.05*h,y:head.y-.04*h},{x:head.x-.1*h,y:head.y+.07*h},ink,lineW*.9);
+  circle(.2*h,(-.27+.08*sn)*h,.045*h,COLLAR);
+  cx.restore();
+  if(hand){
+    cx.save();cx.globalAlpha=Math.max(0,d.alpha);
+    const dist=Math.hypot(neckP.x-hand.x,neckP.y-hand.y),sag=Math.max(.05*h,(1.9*h-dist)*.45);
+    cx.strokeStyle=COLLAR;cx.lineWidth=Math.max(1,lineW*.45);cx.lineCap='round';
+    cx.beginPath();cx.moveTo(hand.x,hand.y);cx.quadraticCurveTo((hand.x+neckP.x)/2,(hand.y+neckP.y)/2+sag,neckP.x,neckP.y);cx.stroke();cx.restore();
+  }
+}
+
+/* ---------- ledges: top edges of cards with clear space above ---------- */
+let cardCol='#FFFDF6';
+const ledgeMap=new Map();let ledges=[],paintEls=null,paintFor='';
+const $$=s=>[...document.querySelectorAll(s)];
+function paintList(){
+  const key=W+'x'+VH;if(paintEls&&paintFor===key)return paintEls;
+  paintFor=key;paintEls=[];
+  const solid=/^(IMG|SVG|CANVAS|VIDEO|BUTTON|INPUT|SELECT|TEXTAREA|IFRAME)$/i;
+  for(const el of document.body.querySelectorAll('*')){
+    if(el===cv||/^(SCRIPT|STYLE|PATH|G|CIRCLE|RECT|LINE|POLYGON|POLYLINE|ELLIPSE|DEFS|USE|TEXT|TSPAN)$/i.test(el.tagName))continue;
+    if(el.closest('svg')&&el.tagName.toLowerCase()!=='svg')continue;
+    if(el.closest('.bar')&&!el.classList.contains('bar'))continue;
+    let hit=solid.test(el.tagName);
+    if(!hit){
+      const cs=getComputedStyle(el);
+      if(cs.display==='none'||cs.visibility==='hidden'||cs.opacity==='0')continue;
+      hit=['Top','Right','Bottom','Left'].some(s=>parseFloat(cs['border'+s+'Width'])>0&&cs['border'+s+'Style']!=='none')
+        ||(cs.backgroundColor!=='rgba(0, 0, 0, 0)'&&cs.backgroundColor!=='transparent')||cs.backgroundImage!=='none'||cs.boxShadow!=='none';
+    }
+    if(hit){
+      const clips=[];                                  // overflow-hidden ancestors cut what shows of it
+      for(let p=el.parentElement;p&&p!==document.body;p=p.parentElement){const o=getComputedStyle(p);if(o.overflowX!=='visible'||o.overflowY!=='visible')clips.push(p)}
+      el.__vclips=clips;paintEls.push(el);
+    }
+  }
+  return paintEls;
+}
+function obstacles(){
+  const out=[],lo=-60,hi=VH+60;
+  for(const el of paintList()){
+    const r=el.getBoundingClientRect();if(r.width<=0||r.height<=0||r.bottom<lo||r.top>hi)continue;
+    let l=r.left,t=r.top,rr=r.right,b=r.bottom;
+    for(const c of el.__vclips){const k=c.getBoundingClientRect();l=Math.max(l,k.left);t=Math.max(t,k.top);rr=Math.min(rr,k.right);b=Math.min(b,k.bottom)}
+    if(rr<=l||b<=t)continue;
+    out.push({l,t,r:rr,b,el});
+  }
+  const tw=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:n=>/\S/.test(n.nodeValue)&&!/^(SCRIPT|STYLE)$/.test(n.parentNode.tagName)?1:2});
+  const rg=document.createRange();let n;
+  while((n=tw.nextNode())){
+    rg.selectNodeContents(n);
+    for(const r of rg.getClientRects()){if(r.width>0&&r.height>0&&r.bottom>lo&&r.top<hi)out.push({l:r.left,t:r.top,r:r.right,b:r.bottom,el:null})}
+  }
+  return out;
+}
+/* is the box x1..x2 by y1..y2 free of text and other elements? (ancestors of `own` don't count) */
+function clearBox(obs,x1,x2,y1,y2,own){
+  for(const o of obs){
+    if(o.r<=x1||o.l>=x2||o.b<=y1||o.t>=y2)continue;
+    if(o.el&&own.some(e=>o.el.contains(e)))continue;
+    return false;
+  }
+  return true;
+}
+function scan(){
+  setGeo();
+  for(const l of ledgeMap.values())l.valid=false;
+  const obs=obstacles(),found=[];
+  for(const el of $$(SEL)){
+    const r=el.getBoundingClientRect();
+    if(r.width<5*H||r.top<1.7*H||r.top>barTop-2||r.right<=0||r.left>=W)continue;
+    const top=r.top,st=top-1.6*H,x0=Math.max(0,r.left),x1=Math.min(W,r.right),step=3;
+    const near=obs.filter(o=>!(o.r<=x0||o.l>=x1||o.b<=st+1||o.t>=top-1)&&!(o.el&&o.el.contains(el)));
+    let best=null,run=null;
+    const n=Math.floor((x1-x0)/step);
+    for(let i=0;i<=n;i++){
+      const xa=x0+i*step,ok=i<n&&!near.some(o=>o.r>xa&&o.l<xa+step);
+      if(ok){if(!run)run={a:i,b:i};else run.b=i}
+      else if(run){if(!best||run.b-run.a>best.b-best.a)best=run;run=null}
+    }
+    if(run&&(!best||run.b-run.a>best.b-best.a))best=run;
+    if(!best){if(DBG&&!dbg.rej)dbg.rej=[];if(DBG&&dbg.rej.length<40)dbg.rej.push(el.className+'@'+Math.round(top)+' blk:'+(near[0]?(near[0].el?near[0].el.tagName+'.'+near[0].el.className:'text'):'-'));continue}
+    let a=x0+best.a*step,b=x0+(best.b+1)*step;
+    const startsAtL=best.a===0,endsAtR=best.b>=n-1;
+    a=startsAtL?x0:a+.3*H;b=endsAtR?x1:b-.3*H;
+    if(b-a<5*H)continue;
+    let endL=null,endR=null;
+    if(startsAtL){
+      if(r.left<=2)endL='flush';
+      else if(r.left>=.45*H&&clearBox(obs,r.left-.7*H,r.left,st,top+3.5*H,[el]))endL='climb';
+    }
+    if(endsAtR){
+      if(r.right>=W-2)endR='flush';
+      else if(W-r.right>=.45*H&&clearBox(obs,r.right,r.right+.7*H,st,top+3.5*H,[el]))endR='climb';
+    }
+    let l=ledgeMap.get(el);if(!l){l={el};ledgeMap.set(el,l)}
+    Object.assign(l,{x1:a,x2:b,len:b-a,mid:(a+b)/2,y:top,endL,endR,valid:true,links:[]});
+    if(signMask&&signMask.l===l)signMask.orig={x1:a,x2:b,endL,endR,len:b-a,mid:(a+b)/2};
+    applyMask(l);
+    found.push(l);
+  }
+  // side-by-side hops: the gap between two ledges must be clear too
+  for(const A of found)for(const B of found){
+    if(A===B||Math.abs(A.y-B.y)>=.5*H)continue;
+    let g=null;
+    if(B.x1>=A.x2-.2*H&&B.x1-A.x2<=2.5*H)g=[A.x2,B.x1,{tx:A.x2-.35*H,lx:B.x1+.6*H}];
+    else if(B.x2<=A.x1+.2*H&&A.x1-B.x2<=2.5*H)g=[B.x2,A.x1,{tx:A.x1+.35*H,lx:B.x2-.6*H}];
+    if(g&&clearBox(obs,g[0],g[1],A.y-1.6*H,A.y,[A.el,B.el]))A.links.push({g:B,tx:g[2].tx,lx:g[2].lx});
+  }
+  ledges=found;if(DBG)dbg.found=found.map(l=>l.el.className+'@'+Math.round(l.y)+' '+Math.round(l.x1)+'-'+Math.round(l.x2)+' '+l.endL+'/'+l.endR);
+  return found;
+}
+function syncY(){for(const l of ledges)if(l.valid)l.y=l.el.getBoundingClientRect().top}
+const visible=l=>l.valid&&l.el.isConnected&&l.y>=1.2*H&&l.y<=barTop-1;
+function routes(from,x,maxHops){
+  const out=new Map([[from,{steps:[],x}]]),q=[from];
+  while(q.length){
+    const A=q.shift(),r=out.get(A);if(r.steps.length>=maxHops)continue;
+    for(const k of A.links){if(out.has(k.g)||!visible(k.g))continue;out.set(k.g,{steps:r.steps.concat([{g:k.g,tx:k.tx,lx:k.lx}]),x:k.lx});q.push(k.g)}
+  }
+  return out;
+}
+const addRoute=(f,steps)=>{for(const s of steps)f.queue.push({k:'go',x:s.tx},{k:'hop',x:s.lx,g:s.g})};
+function fits(t,g){
+  switch(t){
+    case'play':case'conduct':return g.len>2.5*H;
+    case'sit':return g.endL==='climb'||g.endR==='climb';
+    case'walkDog':return g.len>10*H;
+    case'juggle':case'read':return g.len>2.5*H;
+    case'nap':return g.len>3*H;
+  }
+  return false;
+}
+
+/* ---------- the figure's life ---------- */
+let fig=null;
+let around=0,signPending=DBG==='sign',signDone=false,lastEl=null,awayUntil=0,retries=0;   // around: seconds he has been showing; sign: once per page visit
+const SIGN_TEXT='Find me in the app';
+function storeInView(){return $$('.store,.fine').some(e=>{const r=e.getBoundingClientRect();return r.bottom>0&&r.top<barTop})}
+function signDims(){const fs=H>=22?11:9;cx.font='700 '+fs+'px Jost,Futura,system-ui,sans-serif';return{fs,w:Math.ceil(cx.measureText(SIGN_TEXT).width+fs*.9),h:Math.round(fs*1.9)}}
+/* the sign: carried (both hands up) then stood on the ledge on two short legs, all inside the 1.6H clear strip */
+function drawSign(x,y,carried,alpha){
+  const d=signDims(),leg=.25*H;
+  cx.save();cx.globalAlpha=alpha;
+  const bx=x-d.w/2,by=carried?y-d.h:y-leg-d.h;
+  if(!carried){seg({x:x-d.w*.25,y},{x:x-d.w*.25,y:y-leg},ink,1.2);seg({x:x+d.w*.25,y},{x:x+d.w*.25,y:y-leg},ink,1.2)}
+  cx.fillStyle=cardCol;cx.fillRect(bx,by,d.w,d.h);cx.strokeStyle=ink;cx.lineWidth=1.2;cx.strokeRect(bx,by,d.w,d.h);
+  cx.fillStyle=ink;cx.textAlign='center';cx.textBaseline='middle';cx.fillText(SIGN_TEXT,x,by+d.h/2+.5);
+  cx.restore();
+}
+const signAhead=(f,hw)=>f.x+f.face*(.55*H+hw);          // beside him, its near edge a little clear of his body and hand
+let signMask=null;
+function applyMask(l){
+  const m=signMask;if(!m||m.l.el!==l.el)return;
+  if(m.side<0){if(l.x2>m.lo){l.x2=Math.min(l.x2,m.lo);l.endR=null}}else{if(l.x1<m.hi){l.x1=Math.max(l.x1,m.hi);l.endL=null}}
+  l.len=Math.max(0,l.x2-l.x1);l.mid=(l.x1+l.x2)/2;
+}
+function clearSignMask(){const m=signMask;if(!m)return;signMask=null;Object.assign(m.l,m.orig)}
+function placeSign(f){
+  const d=signDims(),g=f.ledge,hw=d.w/2,sx=clamp(signAhead(f,hw),g.x1+hw,g.x2-hw);
+  f.sign={st:'stand',x:sx,a:1,g};
+  signMask={l:g,side:f.x<sx?-1:1,lo:sx-hw-.4*H,hi:sx+hw+.4*H,orig:{x1:g.x1,x2:g.x2,endL:g.endL,endR:g.endR,len:g.len,mid:g.mid}};
+  applyMask(g);f.x=clamp(f.x,g.x1,g.x2);
+}
+function planSign(f){
+  signPending=false;signDone=true;
+  const d=signDims(),reach=.55*H+d.w,travel=rnd(2,3)*H,g=f.ledge;
+  const dir=(f.x-g.x1)<(g.x2-f.x)?1:-1;                    // toward the roomier side: the sign is carried ahead of him
+  const x0=dir>0?clamp(f.x,g.x1+H,g.x2-reach-travel-H):clamp(f.x,g.x1+reach+travel+H,g.x2-H);
+  const x1=x0+dir*travel;
+  f.queue.push({k:'go',x:x0},{k:'face',dir},{k:'task',task:'pickup',dur:.5},{k:'go',x:x1,gait:'walk'},{k:'task',task:'setdown',dur:1});
+  if(DBG)dlog('sign:queued');
+}
+function dlog(m){dbg.log.push(m);document.documentElement.dataset.vlog=dbg.log.join(',')+' spawns='+dbg.spawns}
+function entering(g){
+  const h=H,ends=[];if(g.endL)ends.push(true);if(g.endR)ends.push(false);
+  const left=pick(ends),fromEdge=(left?g.endL:g.endR)==='flush',run=fromEdge&&Math.random()<.5;
+  return{ledge:g,x:left?g.x1:g.x2,y:g.y,face:left?1:-1,end:left?-1:1,fromEdge,enterRun:run,
+    enterDur:fromEdge?1.6*h/(run?runV:walkV):.95,mode:'enter',t:0,age:0,life:rnd(12,17),phase:0,queue:[],act:null,react:null,
+    leaving:false,taps:0,tapLimit:Math.random()<.5?2:3,last:null,done:new Set(),dog:null,ball:null,scanT:0,vy:0};
+}
+function planLeave(f){
+  const h=H,all=routes(f.ledge,f.x,6);
+  const exits=[...all].filter(([g])=>g.endL||g.endR).sort((a,b)=>a[1].steps.length-b[1].steps.length);
+  if(!exits.length){f.queue.push(f.sign&&f.sign.st==='stand'?{k:'unsign'}:{k:'gone'});return}   // only exit is across the sign: it fades first
+  const[g,r]=exits[0];addRoute(f,r.steps);
+  let side;
+  if(g.endL==='flush')side=-1;else if(g.endR==='flush')side=1;
+  else if(g.endL&&g.endR)side=(r.x-g.x1<g.x2-r.x)?-1:1;else side=g.endL?-1:1;
+  if((side<0?g.endL:g.endR)==='flush')f.queue.push({k:'go',x:side<0?-1.5*h:W+1.5*h,gait:'run',free:true},{k:'gone'});
+  else f.queue.push({k:'go',x:side<0?g.x1+.3*h:g.x2-.3*h},{k:'climbOut',out:side});
+}
+function planErrand(f){
+  const h=H,all=routes(f.ledge,f.x,3);
+  let names=ERR.filter(n=>!f.done.has(n));if(!names.length){f.done.clear();names=ERR.slice()}
+  if(FORCED)names=[FORCED];
+  for(let tries=0;tries<12;tries++){
+    const name=pick(names);
+    const options=[...all].filter(([g])=>visible(g)&&fits(name,g));
+    if(!options.length)continue;
+    const away=options.filter(o=>o[0]!==f.ledge);
+    const[g,r]=(away.length&&Math.random()<.75)?pick(away):pick(options);
+    addRoute(f,r.steps);
+    const lo=g.x1+.6*h,hi=g.x2-.6*h,xs=r.x;f.done.add(name);
+    if(DBG){dbg.log.push(name);document.documentElement.dataset.vlog=dbg.log.join(',')+' spawns='+dbg.spawns}
+    switch(name){
+      case'play':case'conduct':
+        f.queue.push({k:'go',x:clamp(xs+rnd(-5,5)*h,lo,hi)},{k:'task',task:name,dur:rnd(2.6,3.6)});break;
+      case'sit':{
+        const ends=[];if(g.endL==='climb')ends.push(-1);if(g.endR==='climb')ends.push(1);
+        const e=pick(ends);
+        f.queue.push({k:'go',x:e<0?g.x1+.12*h:g.x2-.12*h},{k:'task',task:'sit',dur:rnd(3,4),out:e});break}
+      case'walkDog':{
+        const a=xs<g.mid?lo:hi,dir=a===lo?1:-1,b=(a===lo?hi:lo)-dir*1.7*h,m=a+(b-a)*rnd(.35,.6);
+        f.queue.push({k:'go',x:a},{k:'face',dir},{k:'dogIn',dir,dur:.7},{k:'go',x:m,gait:'walk'},
+          {k:'task',task:'sniff',dur:rnd(1.4,1.9)},{k:'go',x:b,gait:'walk'},{k:'task',task:'walkDog',dur:1.2},
+          {k:'dogOff',dur:.6},{k:'wait',dur:.3});break}
+      default:{
+        const a={k:'task',task:name,dur:3};
+        if(name==='juggle'){a.dur=rnd(3.4,4.2);if(Math.random()<.4)a.drop=a.dur-1.1}
+        else if(name==='read')a.dur=rnd(3.6,4.6);
+        else a.dur=rnd(4.5,5.5);
+        const room=name==='nap'?1.2*h:0;
+        f.queue.push({k:'go',x:clamp(xs+rnd(-4,4)*h,lo+room,hi-room)},a);
+      }
+    }
+    return;
+  }
+  if(signMask){f.queue.push({k:'task',task:'wave',dur:1});f.leaving=true;return}
+  f.queue.push({k:'wait',dur:.5});
+}
+function next(f){
+  const h=H;
+  if(!f.queue.length){
+    if(f.leaving||f.age>f.life){f.leaving=true;planLeave(f)}
+    else if(signPending&&!signDone&&f.ledge.len>10*H)planSign(f);
+    else planErrand(f);
+  }
+  const a=f.queue.shift();f.t=0;
+  switch(a.k){
+    case'face':f.face=a.dir;f.act=a;return next(f);
+    case'go':{
+      if(!a.free)a.x=clamp(a.x,f.ledge.x1+.1*h,f.ledge.x2-.1*h);
+      const d=a.x-f.x;if(Math.abs(d)<1){f.act=a;return next(f)}
+      f.face=d>0?1:-1;a.gait=a.gait||(f.leaving||Math.abs(d)>4.5*h?'run':'walk');a.dist=Math.abs(d);break}
+    case'hop':{
+      const T=a.g;if(!T||!visible(T)){f.queue=[];f.act=null;return next(f)}
+      f.face=(a.x-f.x)===0?f.face:(a.x>f.x?1:-1);
+      a.from=f.ledge;a.x0=f.x;a.y0=f.y;a.dur=.38+Math.hypot(a.x-f.x,T.y-f.y)/(30*h);break}
+    case'task':if(a.task==='pickup')f.sign={st:'carry',x:0,a:1};break;
+    case'gone':f.act=a;vanish('gone');return;
+    case'dogIn':f.face=a.dir;f.dog={x:f.x+a.dir*2.6*h,y:f.y,dir:a.dir,phase:0,alpha:0,sniff:0,wag:0,lift:0,gone:false};break;
+    case'dogOff':if(f.dog)f.dog.gone=true;break;
+    case'climbOut':f.face=-a.out;f.end=a.out;a.dur=.9;break;
+  }
+  f.act=a;
+}
+function stepDog(f,dt){
+  const d=f.dog;if(!d)return;const h=H;
+  if(f.mode!=='act'||f.leaving)d.gone=true;
+  if(d.gone){
+    d.phase+=dt*runV*2*PI/(.8*h);d.x+=d.dir*runV*.9*dt;d.lift=.25*h*Math.abs(Math.sin(d.phase*.5));d.alpha-=dt*2;
+    if(d.alpha<=0)f.dog=null;return;
+  }
+  const a=f.act;
+  if(a&&a.k==='dogIn'){
+    const u=clamp(f.t/.7,0,1),tx=f.x+d.dir*1.5*h;
+    d.x=tx+d.dir*1.1*h*(1-ease(u));d.lift=.7*h*4*u*(1-u);d.alpha=Math.min(1,u*3);
+  }else{
+    const pat=a&&a.k==='task'&&a.task==='walkDog',tx=f.x+d.dir*(pat?.6:1.5)*h,gap=tx-d.x;
+    const moving=a&&a.k==='go'&&Math.abs(a.x-f.x)>.5;
+    d.x+=gap*Math.min(1,dt*6);if(moving||Math.abs(gap)>.05*h)d.phase+=dt*2*PI*2.6;
+    d.lift=0;d.alpha=1;
+  }
+  d.y=f.ledge.y;d.x=clamp(d.x,f.ledge.x1,f.ledge.x2);
+  const sniffing=a&&a.k==='task'&&a.task==='sniff';
+  d.sniff+=((sniffing?1:0)-d.sniff)*Math.min(1,dt*8);
+  d.wag+=dt*(a&&a.task==='walkDog'&&a.k==='task'?22:9);
+}
+function stepBall(f,dt){
+  const b=f.ball;if(!b)return;const r=.09*H,s=f.ledge;
+  b.vy+=1500*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;
+  if(b.x>s.x1&&b.x<s.x2&&b.vy>0&&b.y>=s.y-r&&b.y-b.vy*dt<=s.y-r+1){
+    b.y=s.y-r;b.vy=Math.abs(b.vy)>60?-Math.abs(b.vy)*.5:0;b.vx*=.85;
+  }else if(b.x<=s.x1||b.x>=s.x2)b.life=Math.min(b.life,.12);   // rolled off the end: fades, never falls over the page
+  if(b.life<=0)f.ball=null;
+}
+function vanish(why){clearSignMask();if(fig&&fig.ledge)lastEl=fig.ledge.el;awayUntil=performance.now()+rnd(3000,6000);fig=null;if(DBG){dbg.log.push('vanish:'+why);document.documentElement.dataset.vlog=dbg.log.join(',')+' spawns='+dbg.spawns}}
+function step(dt){
+  const f=fig,h=H;
+  f.t+=dt;f.age+=dt;around+=dt;
+  if(f.sign&&f.sign.g&&(!f.sign.g.valid||!f.sign.g.el.isConnected)){f.sign=null;clearSignMask()}
+  if(f.sign){
+    if(f.sign.st==='carry'&&f.leaving)placeSign(f);
+    if(f.sign.st==='stand'&&f.leaving){f.sign.a-=dt*2.5;if(f.sign.a<=0){f.sign=null;clearSignMask()}}
+  }
+  syncY();
+  const s=f.ledge;
+  const hopping=f.mode==='act'&&f.act&&f.act.k==='hop';
+  if(f.mode==='drop'){
+    f.vy+=1500*dt;f.y+=f.vy*dt;if(f.t>.22)vanish('dropped');return;
+  }
+  if(!s.valid||!s.el.isConnected)return vanish('invalid');
+  if(!hopping){
+    f.y=s.y;
+    if(s.y<1.2*h||s.y>barTop-1)return vanish('offscreen');         // ledge scrolled out of view: he just leaves
+  }
+  stepDog(f,dt);stepBall(f,dt);
+  f.scanT+=dt;
+  if(f.scanT>1){                                          // re-check the strip above his ledge
+    f.scanT=0;if(!signDone&&!signPending&&(around>=40||storeInView()))signPending=true;
+    const keep=s;scan();if(!keep.valid)return vanish('rescan');
+    f.x=clamp(f.x,keep.x1,keep.x2);
+  }
+  if(f.mode==='enter'){
+    if(f.t>=f.enterDur){f.mode='act';f.x=f.end<0?s.x1+.6*h:s.x2-.6*h;f.face=-f.end;next(f)}
+    return;
+  }
+  if(f.mode==='react'){
+    const r=f.react;
+    if(r.kind==='cartwheel')f.x=clamp(r.x0+f.face*2.2*h*ease(clamp(f.t/r.dur,0,1)),s.x1+.3*h,s.x2-.3*h);
+    if(f.t>=r.dur){
+      f.mode='act';f.queue=[];if(f.sign&&f.sign.st==='carry')placeSign(f);if(r.kind==='startle'||f.taps>=f.tapLimit)f.leaving=true;next(f);
+    }
+    return;
+  }
+  const a=f.act;if(!a)return next(f);
+  switch(a.k){
+    case'go':{
+      const run=a.gait==='run',v=(run?runV:walkV)*(f.leaving&&run?1.15:1);
+      f.phase+=dt*v*2*PI/(run?runStride:walkStride);
+      const d=a.x-f.x;f.x+=(d>0?1:-1)*Math.min(Math.abs(d),v*dt);
+      if(Math.abs(a.x-f.x)<.5){if(run&&a.dist>5*h&&!a.free)f.queue.unshift({k:'skid'});next(f)}
+      break}
+    case'skid':{
+      const u=f.t/.32;f.x=clamp(f.x+f.face*runV*.5*(1-u)*dt,s.x1+.1*h,s.x2-.1*h);if(u>=1)next(f);break}
+    case'hop':{
+      const cr=.1,y0=a.from.y,g=a.g;
+      if(f.t>cr){
+        const u=clamp((f.t-cr)/a.dur,0,1),apex=.6*h+Math.max(0,y0-g.y)*.9;
+        f.x=a.x0+(a.x-a.x0)*u;f.y=y0+(g.y-y0)*u-4*u*(1-u)*apex;
+        if(u>=1){f.ledge=g;f.y=g.y}
+      }else f.y=y0;
+      if(f.t>=cr+a.dur+.1){f.ledge=g;next(f)}
+      break}
+    case'task':
+      if(a.task==='setdown'&&f.sign&&f.sign.st==='carry'&&f.t>=.5){placeSign(f);if(DBG)dlog('sign:down')}
+      if(a.task==='juggle'&&a.drop>0&&!a.bursts&&f.t>=a.drop&&ballAt){
+        a.bursts=1;f.ball={x:ballAt.x,y:ballAt.y,vx:f.face*.9*h,vy:-.6*h,life:2.6};
+      }
+      if(f.t>=a.dur)next(f);break;
+    case'dogIn':case'dogOff':case'wait':if(f.t>=a.dur)next(f);break;
+    case'unsign':if(!f.sign)next(f);break;
+    case'climbOut':
+      if(f.t>=a.dur){f.mode='drop';f.t=0;f.vy=0;f.queue=[];f.act=null;f.dog=null}
+      break;
+    default:next(f);
+  }
+}
+function tap(f){
+  const s=f.ledge,h=H;
+  const pool=['wave','backflip','cartwheel','startle'].filter(k=>k!==f.last),kind=pick(pool);
+  if(kind==='cartwheel'&&(f.face>0?s.x2-f.x:f.x-s.x1)<2.6*h)f.face=-f.face;
+  if(kind==='startle')f.face=Math.random()<.5?1:-1;
+  f.taps++;f.last=kind;f.mode='react';f.t=0;
+  f.react={kind,x0:f.x,dur:{wave:.9,backflip:.8,cartwheel:.85,startle:.42}[kind]};
+}
+document.addEventListener('click',e=>{
+  const f=fig;if(!f||f.mode!=='act'||!f.act||f.leaving||['hop','climbOut','gone'].includes(f.act.k))return;
+  const h=H,lying=f.act.task==='nap';
+  if(Math.abs(e.clientX-f.x)<(lying?1.1:.8)*h&&e.clientY>f.y-1.5*h&&e.clientY<f.y+.4*h)tap(f);
+});
+
+/* ---------- drawing ---------- */
+function footShadow(x,feetY,alpha,cands){
+  const g=cands.find(l=>l&&l.y>=feetY-2&&x>=l.x1&&x<=l.x2);if(!g)return;
+  const h=H,k=Math.max(.35,1-Math.max(0,g.y-feetY)/(1.4*h)),rx=.36*h*k,ry=.075*h*k+.4;
+  cx.save();cx.globalAlpha=.28*k*alpha;cx.fillStyle=ink;cx.beginPath();cx.ellipse(x,g.y+.2,rx,ry,0,0,2*PI);cx.fill();cx.restore();
+}
+function climbParts(f,s,u){
+  const h=H,outX=f.end<0?s.x1:s.x2,out=f.end;
+  if(u<.6){
+    const v=u/.6,kick=Math.sin(v*PI*3)*.3,l=(a,b)=>a+(b-a)*v;
+    return{x:outX+out*.2*h,pose:P(.25+kick,-.1+kick,.1-kick,-.25-kick,l(PI-.25,PI-.9),l(PI-.15,PI-.2),l(PI-.35,PI-.9),l(PI-.2,PI-.3)),
+      o:{grounded:false,lift:-1.1*h+.55*h*ease(v),alpha:clamp(v*2.2,0,1)}};
+  }
+  const v=(u-.6)/.4;
+  return{x:outX-out*(-.1+.55*ease(v))*h,pose:mixP(CROUCH,STAND,ease(v)),o:{lift:-.25*h*(1-ease(v))}};
+}
+function drawAll(f,x,face,pose,o){
+  x=x===null?f.x:x;face=face===null?f.face:face;
+  const cands=[f.ledge,f.act&&f.act.k==='hop'?f.act.g:null];
+  footShadow(x,f.y-(o.shadowLift!==undefined?o.shadowLift:(o.lift||0)),o.alpha===undefined?1:o.alpha,cands);
+  if(f.dog)footShadow(f.dog.x,f.dog.y-f.dog.lift,f.dog.alpha*.8,cands);
+  if(f.sign&&f.sign.st==='stand')drawSign(f.sign.x,f.sign.g.y,false,f.sign.a);
+  else if(f.sign&&f.sign.st==='carry'){       // held out ahead of him in the leading hand, behind the figure, bottom at knee height
+    const hw=signDims().w/2,rise=f.act&&f.act.task==='pickup'?ease(clamp(f.t/.5,0,1)):1;
+    drawSign(clamp(signAhead(f,hw),f.ledge.x1+hw,f.ledge.x2-hw),f.y-.24*H*rise,true,1);
+  }
+  leadHand=null;joints=null;
+  figure(x,f.y,face,pose,o);
+  if(f.dog)dogGlyph(f.dog,f.dog.gone?null:leadHand);
+  if(joints)errandProps(f,joints,face);
+  if(f.ball){const b=f.ball;cx.save();cx.globalAlpha=Math.min(1,b.life*1.5);circle(b.x,b.y,.09*H,pal.p);cx.restore()}
+}
+function errandProps(f,j,face){
+  if(f.mode!=='act'||!f.act||f.act.k!=='task')return;
+  const a=f.act,t=f.t,h=H,fade=clamp(Math.min(t/.2,(a.dur-t)/.2),0,1);
+  if(a.task==='juggle'){
+    const cols=[pal.p,pal.s,pal.t],end=a.drop>0?a.drop:a.dur-.3,per=1.2;
+    if(t<=.25||t>=end){
+      const held=a.drop>0&&t>=end?[1,2]:[0,1,2];
+      for(const k of held){const hd=k===1?j.rh:j.lh;circle(hd.x+(k===2?.1*h*face:0),hd.y-.09*h,.09*h,cols[k])}
+      if(k0(a)&&!a.bursts)ballAt={x:j.lh.x,y:j.lh.y-.09*h};
+      return;
+    }
+    for(let k=0;k<3;k++){
+      const u=(((t-.25)/per+k/3)%1)*2,[p0,p1,ap]=u<1?[j.lh,j.rh,.8*h]:[j.rh,j.lh,.45*h],v=u<1?u:u-1;
+      const p={x:p0.x+(p1.x-p0.x)*v,y:p0.y+(p1.y-p0.y)*v-4*v*(1-v)*ap-.09*h};
+      if(k===0)ballAt=p;
+      if(k===0&&a.bursts>0)continue;
+      circle(p.x,p.y,.09*h,cols[k]);
+    }
+  }else if(a.task==='read'){
+    const m={x:(j.lh.x+j.rh.x)/2,y:(j.lh.y+j.rh.y)/2-.05*h},pw=.17*h,ph=.24*h;
+    cx.save();cx.globalAlpha=fade;cx.translate(m.x,m.y);
+    const page=(x0,w)=>{
+      const rx=Math.min(x0,x0+w),rw=Math.abs(w);
+      cx.fillStyle='#fff';cx.fillRect(rx,-ph/2,rw,ph);cx.strokeStyle=ink;cx.lineWidth=.6;cx.strokeRect(rx,-ph/2,rw,ph);
+      cx.globalAlpha=fade*.5;cx.lineWidth=.5;cx.beginPath();
+      for(let i=0;i<3;i++){const yy=-ph/2+ph*(.3+.2*i);cx.moveTo(rx+.2*rw,yy);cx.lineTo(rx+rw-.2*rw,yy)}
+      cx.stroke();cx.globalAlpha=fade;
+    };
+    page(-pw,pw);page(0,pw);
+    const v=((t-.6)%1.4)/.35;if(t>.6&&v<1)page(0,pw*Math.cos(PI*v));
+    cx.fillStyle=pal.p;cx.fillRect(-pw-.03*h,ph/2,2*pw+.06*h,.035*h);
+    cx.restore();
+  }else if(a.task==='nap'){
+    for(let k=0;k<4;k++){
+      const age=t-.7-k*.9;if(age<=0||age>=1.5||t>=a.dur-.3)continue;   // fades before it can climb past the clear strip
+      const s=.07*h+.04*h*age,c={x:j.head.x+face*(.15*h+.25*h*age)+.08*h*Math.sin(age*4),y:j.head.y-.3*h-.5*h*age};
+      cx.save();cx.globalAlpha=Math.min(1,age*3,(1.5-age)*1.5);cx.strokeStyle=ink;cx.lineWidth=Math.max(1,lineW*.55);cx.lineCap='round';cx.lineJoin='round';
+      cx.beginPath();cx.moveTo(c.x-s,c.y-s);cx.lineTo(c.x+s,c.y-s);cx.lineTo(c.x-s,c.y+s);cx.lineTo(c.x+s,c.y+s);cx.stroke();cx.restore();
+    }
+  }
+}
+const k0=a=>a.task==='juggle';
+
+function render(f){
+  const h=H,t=f.t,s=f.ledge;
+  if(f.mode==='drop'){const c=climbParts({end:f.end},s,0);c.o.alpha=Math.max(0,1-f.t/.22);return drawAll(f,c.x,-f.end,c.pose,c.o)}
+  if(f.mode==='enter'){
+    const u=clamp(t/f.enterDur,0,1);
+    if(f.fromEdge){
+      const sx=f.end<0?-1.2*h:W+1.2*h,tx=f.end<0?s.x1+.6*h:s.x2-.6*h,d=Math.abs(tx-sx)*u;
+      const p=f.enterRun?runPose(d*2*PI/runStride):walkPose(d*2*PI/walkStride);
+      return drawAll(f,sx+(tx-sx)*u,-f.end,p,{rot:f.enterRun?.16:0});
+    }
+    const c=climbParts(f,s,u);return drawAll(f,c.x,-f.end,c.pose,c.o);
+  }
+  if(f.mode==='react'){
+    const r=f.react;let pose=STAND,o={};
+    switch(r.kind){
+      case'wave':{
+        const up=Math.min(1,t*7,(r.dur-t)*7);
+        pose=Object.assign({},STAND,{ra:-.1+(PI-.35+.1)*up,rf:.02+(PI-.35+.55*Math.sin(t*20)-.02)*up});o.lift=Math.abs(Math.sin(t*10))*.06*h*up;break}
+      case'backflip':{
+        const c=.14,air=.5;
+        if(t<c)pose=mixP(STAND,CROUCH,t/c);
+        else if(t<c+air){
+          const u=(t-c)/air;
+          pose=u<.2?mixP(STAND,TUCK,u/.2):u>.8?mixP(TUCK,CROUCH,(u-.8)/.2):TUCK;
+          o={grounded:false,lift:1.35*h*4*u*(1-u)+.05*h,rot:-2*PI*ease(u)};
+        }else pose=mixP(CROUCH,STAND,(t-c-air)/.14);
+        break}
+      case'cartwheel':{
+        const u=clamp(t/r.dur,0,1);
+        pose=u<.12?mixP(STAND,STAR,u/.12):u>.88?mixP(STAR,STAND,(u-.88)/.12):STAR;
+        o={grounded:false,lift:.04*h+Math.sin(PI*u)*.08*h,rot:2*PI*ease(u)};break}
+      case'startle':{
+        const u=clamp(t/r.dur,0,1);
+        pose=P(.5,.3,-.5,-.3,PI-.5,PI-.3,-(PI-.5),-(PI-.3));
+        if(u>.75)pose=mixP(pose,runPose(0),(u-.75)/.25);
+        o.lift=.85*h*4*u*(1-u);break}
+    }
+    return drawAll(f,null,null,pose,o);
+  }
+  const a=f.act;if(!a)return drawAll(f,null,null,STAND,{});
+  let pose=STAND,o={},face=null;
+  switch(a.k){
+    case'go':if(a.gait==='run'){pose=runPose(f.phase);o.rot=.16}else pose=walkPose(f.phase);break;
+    case'skid':{
+      const u=clamp(t/.32,0,1);
+      pose=mixP(P(.75,.55,.15,-.35,-.9,-.5,.9,1.3),STAND,Math.max(0,u-.6)/.4);o.rot=-.28*(1-u);break}
+    case'hop':{
+      const cr=.1;
+      if(t<cr)pose=mixP(STAND,CROUCH,t/cr);
+      else if(t<cr+a.dur)pose=mixP(P(.75,-.25,.25,-.7,2.3,2.2,1.9,1.8),CROUCH,((t-cr)/a.dur-.7)/.3);
+      else pose=mixP(CROUCH,STAND,(t-cr-a.dur)/.1);
+      break}
+    case'climbOut':{const c=climbParts({end:f.end},s,1-clamp(t/a.dur,0,1));c.o.alpha=1;return drawAll(f,c.x,-f.end,c.pose,c.o)}
+    case'task':{
+      const tin=Math.min(1,t/.2,(a.dur-t)/.2);
+      switch(a.task){
+        case'play':{
+          pose=mixP(STAND,violinPose(t),tin);o.prop=tin>.8?'violin':null;o.rot=.04*Math.sin(t*1.7);face=1;break}
+        case'conduct':{
+          const b=t*6.3,c=Object.assign({},STAND,{ra:2.1+.7*Math.sin(b),rf:2.5+.5*Math.cos(b),la:1.7+.25*Math.sin(b*.5+1),lf:2.2});
+          pose=mixP(STAND,c,tin);o.prop=tin>.5?'baton':null;o.lift=.04*h*Math.abs(Math.sin(b))*tin;break}
+        case'sit':{
+          const sy=.15+.4*Math.sin(t*4.5),sy2=.15+.4*Math.sin(t*4.5+1.4);
+          const sit=P(PI/2-.1,sy,PI/2-.2,sy2,-.7,-.5,-.6,-.4);
+          if(t<.25){pose=mixP(STAND,sit,t/.25);o.hipY=-.48*h*(1-t/.25)}
+          else if(t>a.dur-.25){const u=(a.dur-t)/.25;pose=mixP(STAND,sit,u);o.hipY=-.48*h*(1-u)}
+          else{pose=sit;o.hipY=0}
+          face=a.out;break}
+        case'juggle':{
+          const end=a.drop>0?a.drop:a.dur-.3,on=t>.25&&t<end?1:0,bob=.3*Math.sin(t*2*PI/.4)*on;
+          let p=Object.assign({},STAND,{la:-.3,lf:1.2+bob,ra:.75,rf:1.5-bob});
+          if(a.drop>0&&t>a.drop+.3)p=mixP(p,Object.assign({},p,{la:.5,lf:2.3,ra:-.4,rf:1.9}),(t-a.drop-.3)/.2);
+          pose=mixP(STAND,p,tin);break}
+        case'wave':{
+          const up=Math.min(1,t*7,(a.dur-t)*7);
+          pose=Object.assign({},STAND,{ra:-.1+(PI-.25)*up,rf:.02+(PI-.37+.55*Math.sin(t*20))*up});o.lift=Math.abs(Math.sin(t*10))*.06*H*up;break}
+        case'read':{
+          pose=mixP(STAND,Object.assign({},STAND,{la:1.05,lf:2.1,ra:.95,rf:2.15}),tin);o.bend=.12*tin;break}
+        case'nap':{
+          const lie=ease(clamp(Math.min(t/.45,(a.dur-t)/.45),0,1)),flat=P(.02,0,.9,-.9,.15,2.7,.1,2.8);
+          pose=mixP(STAND,flat,lie);o={grounded:false,lift:-.46*h*lie+.012*h*Math.sin(t*2.6)*lie,rot:-PI/2*lie,shadowLift:0};break}
+      }
+      break}
+  }
+  if(f.sign&&f.sign.st==='carry'){       // both hands up, holding it in front
+    const up=Object.assign({},pose,{ra:.9,rf:1.0});      // leading hand out to the sign; the other arm swings as usual
+    pose=a.task==='pickup'?mixP(pose,up,t/.5):a.task==='setdown'?mixP(up,pose,(t-.5)/.5):up;
+  }
+  if(f.dog&&!f.dog.gone){
+    o.lead=true;
+    if(a.k==='task'&&a.task==='walkDog'){
+      const pat=Math.sin(t*14),b=Math.min(1,t/.25,(a.dur-t)/.25);
+      pose=Object.assign({},pose,{ra:.3+.2*pat*b,rf:.2+.25*pat*b});o.bend=.8*b;
+    }else if(a.k==='dogIn'&&t<.4)pose=Object.assign({},pose,{ra:1.9,rf:3.7});
+    else pose=Object.assign({},pose,{ra:.6,rf:.85});
+  }
+  drawAll(f,null,face,pose,o);
+}
+
+/* ---------- loop and scheduling ---------- */
+let raf=0,lastTs=0,armT=0,dbgT=0;
+function frame(ts){
+  raf=0;if(!fig)return finish();
+  const dt=Math.min(.05,Math.max(0,(ts-lastTs)/1000||0));lastTs=ts;
+  step(dt);
+  cx.setTransform(dpr,0,0,dpr,0,0);cx.clearRect(0,0,W,VH);
+  if(fig){render(fig);
+    if(DBG&&signMask&&fig.sign&&fig.sign.st==='stand'&&fig.sign.g===fig.ledge&&fig.mode!=='drop'){
+      const hw=signDims().w/2,inside=Math.abs(fig.x-fig.sign.x)<hw+.4*H,sc=dbg.sg||(dbg.sg={ok:0,bad:0});
+      inside?sc.bad++:sc.ok++;document.documentElement.dataset.vsign='ok='+sc.ok+' bad='+sc.bad;
+    }
+    if(DBG&&fig.sign&&fig.sign.st==='carry'&&joints){            // is his head still ink (not covered by the sign)?
+      const px=cx.getImageData(Math.round(joints.head.x*dpr),Math.round(joints.head.y*dpr),1,1).data,c=ink.replace('#',''),
+        want=[0,2,4].map(i=>parseInt(c.slice(i,i+2),16)),near=want.every((v,i)=>Math.abs(v-px[i])<40)&&px[3]>200;
+      const hc=dbg.head||(dbg.head={ok:0,bad:0});near?hc.ok++:hc.bad++;document.documentElement.dataset.vhead='ok='+hc.ok+' bad='+hc.bad;
+    }if(DBG&&ts-dbgT>200){dbgT=ts;const a=fig.act;document.documentElement.dataset.visitorState=fig.mode+':'+(a?a.k+(a.task?'/'+a.task:''):'')}}
+  if(fig)raf=requestAnimationFrame(frame);else finish();
+}
+function finish(){if(cv){cx.setTransform(dpr,0,0,dpr,0,0);cx.clearRect(0,0,W,VH);cv.style.display='none'}ballAt=null;if(DBG)document.documentElement.dataset.visitorState='none';arm()}
+function summon(){
+  if(fig||rmq.matches||document.hidden)return false;
+  scan();readColours();
+  if(!signDone&&!signPending&&(around>=40||storeInView()))signPending=true;
+  let pool=ledges.filter(l=>l.len>5*H&&(l.endL||l.endR)&&visible(l));
+  if(!pool.length)return false;
+  if(signPending&&!signDone){const big=pool.filter(l=>l.len>10*H);if(big.length)pool=big}   // a ledge long enough for the sign
+  const diff=pool.filter(l=>l.el!==lastEl);if(diff.length)pool=diff;                       // back on a different card if there is one
+  const g=pick(pool);
+  ensureCanvas();fig=entering(g);dbg.spawns++;lastTs=performance.now();
+  if(DBG)dlog('appear:'+(g.el.className||g.el.tagName)+'@'+Math.round(g.y)+(g.el===lastEl?'(same)':''));
+  raf=requestAnimationFrame(frame);return true;
+}
+function arm(){
+  clearTimeout(armT);
+  if(fig||rmq.matches||document.hidden)return;
+  const settle=ALWAYS?1000:rnd(600,1500),delay=Math.max(settle,awayUntil-performance.now());
+  armT=setTimeout(()=>{
+    if(fig)return;
+    if(!summon()&&retries++<3)armT=setTimeout(arm,2000);     // nothing clear in view yet: a few more tries, then wait for a scroll
+  },delay);
+}
+function kill(){clearTimeout(armT);if(raf)cancelAnimationFrame(raf);raf=0;fig=null;if(cv)finish()}
+addEventListener('scroll',()=>{if(!fig){retries=0;arm()}},{passive:true});
+addEventListener('resize',()=>{setGeo();if(cv&&fig){sizeCanvas();scan();if(!fig.ledge.valid)kill()}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)kill();else arm()});
+rmq.addEventListener('change',()=>{if(rmq.matches)kill();else arm()});
+setGeo();
+if(!rmq.matches)arm();
+})();
+</script>
+</body>
+</html>
