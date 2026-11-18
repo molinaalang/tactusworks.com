@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "updated": "2026-11-18",
+  "site": "https://tactusworks.com/",
+  "apps": [
+    {
+      "id": "tactus",
+      "name": "Tactus",
+      "description": "Enter changing metres in seconds, and subdivide every beat exactly.",
+      "icon": "https://tactusworks.com/img/tactus.png",
+      "page": "https://tactusworks.com/tactus/",
+      "platforms": ["ios", "android"],
+      "ios": {
+        "appStoreId": "6770496883",
+        "url": "https://apps.apple.com/app/id6770496883"
+      },
+      "android": {
+        "package": "com.alanmolina.tactus",
+        "url": "https://play.google.com/store/apps/details?id=com.alanmolina.tactus"
+      }
+    },
+    {
+      "id": "tempostep",
+      "name": "TempoStep",
+      "description": "A metronome that listens. Stop playing and the tempo steps up on its own.",
+      "icon": "https://tactusworks.com/img/tempostep.png",
+      "page": "https://tactusworks.com/tempostep/",
+      "platforms": ["ios"],
+      "ios": {
+        "appStoreId": "6762228387",
+        "url": "https://apps.apple.com/app/id6762228387"
+      },
+      "android": {
+        "package": "com.alanmolina.tempostep",
+        "url": ""
+      }
+    },
+    {
+      "id": "segno",
+      "name": "Segno",
+      "description": "A fun score reader. Practise anywhere, nod to turn the page.",
+      "icon": "https://tactusworks.com/img/segno.png",
+      "page": "https://tactusworks.com/segno/",
+      "platforms": [],
+      "ios": {
+        "appStoreId": "",
+        "url": ""
+      },
+      "android": {
+        "package": "com.tactus.segno",
+        "url": ""
+      }
+    }
+  ]
+}
