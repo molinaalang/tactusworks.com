@@ -46,6 +46,8 @@
       -webkit-backdrop-filter: saturate(140%) blur(14px);
       border-bottom: 0.5px solid var(--hair);
     }
+    .tw-home a { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: 14px; color: var(--fg-2); text-decoration: none; }
+    .tw-home a:hover { color: var(--fg); }
     .nav-inner {
       display: flex; align-items: center; justify-content: space-between;
       height: 64px;
@@ -531,6 +533,7 @@
 <body>
 
   <!-- ── Nav ─────────────────────────────────────────────────────────── -->
+  <div class="wrap tw-home"><a href="../../"><span aria-hidden="true">&larr;</span> Tactus Works</a></div>
   <nav>
     <div class="wrap nav-inner">
       <a class="brand" href="../">
@@ -888,7 +891,7 @@
         <span class="wordmark">Tactus</span>
       </a>
       <div style="color: var(--fg-3); font-size:12px;">
-        © 2026 Tactus Works.
+        © 2026 <a href="../../">Tactus Works</a>.
       </div>
       <div class="footer-links">
         <a href="../manual/">Manual</a>

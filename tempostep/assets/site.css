@@ -79,6 +79,8 @@ p { margin: 0 0 var(--s4); max-width: 62ch; }
 .eyebrow { font-size: 0.9375rem; text-transform: lowercase; margin: 0 0 var(--s4); opacity: 0.72; }
 
 /* Nav */
+.tw-home { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; text-decoration: none; }
+.tw-home:hover { text-decoration: underline; }
 .nav {
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
   gap: var(--s4); margin-bottom: var(--s8);

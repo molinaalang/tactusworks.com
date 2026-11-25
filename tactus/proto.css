@@ -61,6 +61,10 @@ button { font: inherit; color: inherit; }
 a { color: inherit; }
 p { margin: 0; }
 
+/* Link back to tactusworks.com: 44px tall, 32px of it added above the header */
+.tw-home { max-width: 1180px; margin: 0 auto -12px; padding: 0 var(--pad); }
+.tw-home a { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: 14px; color: var(--t2); text-decoration: none; position: relative; z-index: 1; }
+
 /* ── Top bar ─────────────────────────────────────────────── */
 .top {
   display: flex; align-items: center; justify-content: space-between;
@@ -502,7 +506,7 @@ main > .story {
 
 /* hover states only where there is a real pointer: on touch they stick after a tap */
 @media (hover: hover) and (pointer: fine) {
-  .top-nav a:hover { color: var(--t1); }
+  .tw-home a:hover, .top-nav a:hover { color: var(--t1); }
   .top-nav .top-get:hover { color: var(--bg); background: var(--accent-hi); }
   .step:hover { color: var(--t2); }
   .next:hover { background: var(--accent-hi); }
@@ -541,13 +545,13 @@ main > .story {
 
 /* Phones, portrait: two deliberate screens. First the words, with the demo's tabs peeking in as the
    cue to scroll; then the demo alone, its list sized to what is left of the visible height.
-   168 = header 58 + hero padding 22 + gap 26 + 62 of stage showing; 403 = 387 of fixed stage + 16. */
+   200 = home link 32 + header 58 + hero padding 22 + gap 26 + 62 of stage showing; 403 = 387 of fixed stage + 16. */
 @media (max-width: 599px) and (min-height: 500px) {
   :root { --bars-h: clamp(calc(var(--row) * 1.5), calc(100svh - 403px), calc(var(--row) * 3.5)); }
-  .hero-copy { min-height: calc(100svh - 168px); display: flex; flex-direction: column; justify-content: center; padding-bottom: 6svh; }
+  .hero-copy { min-height: calc(100svh - 200px); display: flex; flex-direction: column; justify-content: center; padding-bottom: 6svh; }
   h1 { font-size: clamp(30px, 9.4vw, 40px); }
   html { scroll-snap-type: y proximity; }
-  .top { scroll-snap-align: start; }
+  .tw-home { scroll-snap-align: start; }
   .stage { scroll-snap-align: start; scroll-margin-top: 8px; }
 }
 
