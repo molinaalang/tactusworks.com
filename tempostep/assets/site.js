@@ -139,3 +139,9 @@ function rollText(el, text) {
     });
   });
 })();
+
+// Hero screen recording: hold on the poster frame for people who ask for less motion.
+(function () {
+  var v = document.querySelector('[data-shot="hero"] video');
+  if (v && reduceMotion) { v.removeAttribute('autoplay'); v.pause(); }
+})();

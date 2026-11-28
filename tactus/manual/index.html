@@ -517,10 +517,8 @@
         <span class="wordmark">Tactus</span>
       </a>
       <div class="nav-links">
-        <a href="../#features">Features</a>
         <a class="current" href="./">Manual</a>
-        <a href="../#faq">FAQ</a>
-        <a class="nav-cta" href="../#download">
+        <a class="nav-cta" href="../#get">
           Download
         </a>
       </div>
@@ -628,7 +626,7 @@
           <li><span class="g">Tap</span><span>Open the passage in the Editor.</span></li>
           <li><span class="g">Swipe left</span><span>Delete the passage.</span></li>
           <li><span class="g">Swipe right</span><span>Add to a Work, or remove from one if it's already grouped.</span></li>
-          <li><span class="g">Long-press</span><span>Share, Move to Work, Reorder, or Delete.</span></li>
+          <li><span class="g">Long-press</span><span>Share, Duplicate, Move to Work, Reorder, or Delete.</span></li>
         </ul>
 
         <h3>Works</h3>
@@ -665,10 +663,10 @@
         <h3>The Meter Keyboard</h3>
         <p class="body">
           Tap meter buttons to queue them up. A preview of the queue appears at the bottom.
-          Tap <strong>Add</strong> to append the queued bars, or the undo arrow to remove the last one.
+          Tap <strong>Done</strong> to append the queued bars, or the undo arrow to remove the last one.
           Denominators available: <span class="code">/2</span> <span class="code">/4</span>
           <span class="code">/8</span> <span class="code">/16</span>. Custom meters support any
-          numerator from 1&ndash;32 over any of those denominators (plus <span class="code">/1</span> and <span class="code">/32</span>).
+          numerator from 1&ndash;32 over any of those denominators, or <span class="code">/32</span>.
         </p>
 
         <h3>Selecting &amp; editing ranges</h3>
@@ -679,7 +677,7 @@
         </p>
         <div class="note">
           <span class="tag">Note</span>
-          <p>A passage must keep at least one bar. The last remaining bar can&rsquo;t be deleted. Delete others by long-pressing a row, or swiping it left.</p>
+          <p>A passage must keep at least one bar. The last remaining bar can&rsquo;t be deleted. To delete another bar, long-press its row and choose Delete Bar.</p>
         </div>
       </section>
 
@@ -731,8 +729,7 @@
         </p>
         <h3>Changing a bar&rsquo;s meter</h3>
         <p class="body">
-          Long-press a bar row and choose <strong>Change Meter</strong>, or use the meter display in the
-          Beat Inspector toolbar. Picking a new meter adjusts the bar&rsquo;s elements: excess beats
+          Tap the time signature on a bar row. Picking a new meter adjusts the bar&rsquo;s elements: excess beats
           are trimmed from the end; new default beats are added if the meter grows.
         </p>
         <h3>Display bar numbers</h3>
@@ -760,9 +757,9 @@
 
         <h3>Per-bar tempo</h3>
         <p class="body">
-          Long-press a bar and choose <strong>Set Bar Tempo</strong> (or use the Beat Inspector). A small
-          tempo pill appears on the row; the bar plays at that tempo regardless of the global setting.
-          Tap the pill to clear it.
+          Tap the space above a bar&rsquo;s time signature and enter a tempo. The tempo appears there,
+          and the bars after it follow until the next tempo change. To remove it, tap it again and
+          choose <strong>Default</strong>.
         </p>
 
         <h3>Tempo ramps, the Tempo Shape editor</h3>
@@ -817,8 +814,8 @@
           <li><strong>Subdivisions &amp; tuplet inner notes</strong>: Soft.</li>
         </ul>
         <p class="body" style="margin-top:14px;">
-          Use <strong>Clear Accents</strong> from the long-press menu to reset overrides for a bar or the
-          whole passage. You can change any single pulse's accent by hand.
+          To put accents back to the default, select the bars and choose
+          <strong>Reset Beat Strengths</strong>. You can change any single pulse's accent by hand.
         </p>
       </section>
 
@@ -845,7 +842,7 @@
           from the manual start bar if one is set, otherwise from the first bar.
         </p>
         <ul class="bullets">
-          <li><strong>Start bar</strong>: long-press a bar and choose Set As Start Bar (a teal flag marks it). Playback returns here after each loop or stop.</li>
+          <li><strong>Start bar</strong>: with playback stopped, scroll to the bar you want to start from. Playback begins there.</li>
           <li><strong>Loop</strong>: tap the repeat icon; playback restarts from the start bar when it reaches the end.</li>
           <li><strong>Focal scroll</strong>: the Editor keeps the currently playing bar centred.</li>
           <li><strong>Beat animation</strong>: active dots scale up on each click, then decay.</li>
@@ -853,15 +850,15 @@
 
         <h3>Count-in</h3>
         <p class="body">
-          Toggle the count-in button in the transport. It adds one or more bars of clicks before
-          playback, using the meter and tempo of the bar immediately before the start bar (or the
-          first bar&rsquo;s meter, if you start at the top). Count-in uses Strong on beat 1 and Normal
+          Toggle the count-in button in the transport. It adds at least two seconds of clicks, in whole bars, before
+          playback. They use the meter of the bar before the start bar (or the first bar&rsquo;s
+          meter, if you start at the top) and the tempo of the start bar. Count-in uses Strong on beat 1 and Normal
           elsewhere, so you walk in feeling the meter, not counting it.
         </p>
 
         <h3>Practice tempo</h3>
         <p class="body">
-          A global speed multiplier applied on top of every tempo without changing any stored value, ideal for slow practice. Drag the <strong>Practice Tempo</strong> slider in passage settings;
+          A global speed multiplier applied on top of every tempo without changing any stored value, ideal for slow practice. Drag the <strong>Global Tempo</strong> slider in passage settings;
           range <span class="code">50%&ndash;125%</span>. The current scale shows next to the BPM readout
           (e.g. <span class="code">120&nbsp;80%</span>).
         </p>
@@ -902,7 +899,7 @@
         </ul>
         <h3>Tempo &amp; transport sync</h3>
         <p class="body">
-          Toggle <strong>Start/Stop Sync</strong> to broadcast play/stop across all connected apps,
+          Toggle <strong>Sync Start/Stop</strong> to broadcast play/stop across all connected apps,
           and vice versa. If everyone is using the same tempo map, this keeps the whole room
           together.
         </p>
@@ -915,7 +912,7 @@
           <li><strong>Export a passage</strong>: long-press it in the Library and tap <strong>Share</strong> to send a <span class="code">.rhythmmap</span> file through whichever apps are on your device.</li>
           <li><strong>Export a Work</strong>: open the Work detail view and tap the export button.</li>
           <li><strong>Import</strong>: open a <span class="code">.rhythmmap</span> file from anywhere; Tactus adds it to the Library automatically.</li>
-          <li><strong>Import a tempo map</strong>: in passage settings, tap <strong>Import Tempo Map</strong> and pick another passage. Its bar structure (meters and tempos) is copied in while your current beat content is kept; extra bars pad with defaults, fewer bars truncate to match.</li>
+          <li><strong>Import a tempo map</strong>: in passage settings, tap <strong>Import Tempo Map</strong> and pick another passage. Its meters, tempos and tempo shapes are copied in. Beats are kept in bars whose meter doesn&rsquo;t change. If it has more bars than your passage, the extra bars are added with default beats.</li>
         </ul>
       </section>
 
@@ -950,7 +947,7 @@
             <div class="td">Description</div>
           </div>
           <div class="tr">
-            <div class="td"><span class="name">Practice Tempo</span></div>
+            <div class="td"><span class="name">Global Tempo</span></div>
             <div class="td">Global speed multiplier, <span class="mono">50%&ndash;125%</span>.</div>
           </div>
           <div class="tr">
@@ -966,7 +963,7 @@
             <div class="td">Enable network tempo sync.</div>
           </div>
           <div class="tr">
-            <div class="td"><span class="name">Start/Stop Sync</span></div>
+            <div class="td"><span class="name">Sync Start/Stop</span></div>
             <div class="td">Sync play/pause with Link peers.</div>
           </div>
           <div class="tr">
